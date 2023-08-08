@@ -1,0 +1,339 @@
+"use strict";
+
+const { MongoClient } = require("mongodb");
+const request = require('request-promise');
+
+
+require("dotenv").config();
+const { MONGO_URI } = process.env;
+
+const options = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+};
+
+const { v4: uuidv4 } = require("uuid");
+
+// const addUser = async (req, res) => {
+//          try {
+//             const client = new MongoClient(MONGO_URI, options);
+//             await client.connect();
+//             const db = client.db("travelTracker");
+//             console.log("connected!");
+            
+//             const email = req.body.email; 
+//             const check1 = await db.collection("users").findOne({ email });
+//             if (check1) {
+//                 return res.status(400).json({status: 400, message: "User already exists"})
+//             }
+//             const newUser = {}
+//             newUser.email = req.body.email; 
+//             newUser._id = req.body.sub; 
+//             newUser.trips = []; 
+
+//             const result1 = await db.collection("users").insertOne(newUser);
+//             client.close();
+//             console.log("disconnected!");
+//             res.status(201).json({ status: 201, data: newUser, message: "New user created" });
+//             } catch (err) {
+//                 console.log(err);
+//                 res.status(500).json({ status: 500, data: req.body, message: err.message });
+//          }
+//     };
+
+// const getUserData = async (req, res) => {
+//     try {
+//         const client = new MongoClient(MONGO_URI, options);
+//         const _id = req.params.user
+//         await client.connect();
+//         const db = client.db("travelTracker");
+//         console.log("connected!");
+//         const result = await db.collection("users").findOne({ _id });
+//         result
+//             ?  res.status(200).json({ status: 200, data: result } )
+//             :  res.status(400).json({ status: 400, message: "This user does not exist"})
+//         client.close();
+//         console.log("disconnected!");
+//     } catch (err) {
+//         return res.status(500).json({status: 500, data: "error", message: err.message})
+//     }  
+// }
+
+// const editUser = async (req, res) => {
+//     try {
+//         const client = new MongoClient(MONGO_URI, options);
+//         await client.connect();
+//         const db = client.db("travelTracker");
+//         console.log("connected!");
+//         const _id = req.params.user; 
+//         const queryResult = await db.collection("users").findOne({ _id });
+//         const result = await db.collection("users").updateOne({ _id }, { $set: { ...queryResult, password : req.body.password, email : req.body.email } }); 
+//         client.close();
+//             console.log("disconnected!");
+//             res.status(201).json({ status: 201, data: result });
+//     } catch (err) {
+//         console.log(err);
+//         res.status(500).json({ status: 500, data: req.body, message: err.message });
+//     }
+// }
+
+// const deleteUser = async (req, res) => {
+//     try {    
+//         const client = new MongoClient(MONGO_URI, options);
+//         const _id = req.params.user;
+//         await client.connect();
+//         const db = client.db("travelTracker");
+//         console.log("connected!");
+//         const result = await db.collection("users").deleteOne({_id});
+//         res.status(200).json({ status: 200, data: result, message: "User successfully deleted" });
+//         client.close();
+//         console.log("disconnected!");
+//     } catch (err) {
+//         console.log(err);
+//         res.status(500).json({ status: 500, _id, message: err.message });
+//     }
+
+// }
+
+// const addTrip = async (req, res) => {
+//     try {
+//         const client = new MongoClient(MONGO_URI, options);
+//         await client.connect();
+//         const db = client.db("travelTracker");
+//         console.log("connected!");
+//         const _id = req.params.user; 
+//         const queryResult = await db.collection("users").findOne({ _id });
+
+//         //Check if Trip Array exists. If not, add it. 
+     
+//         const check = queryResult.trips.find(item => item.tripId === req.body.tripId);
+//         if (check) {
+//             return res.status(400).json({status: 400, message: "Please use a unique name for every trip"})
+//         }
+
+//         const trips = queryResult.trips;
+//         req.body.expenses = []; 
+//         trips.push(req.body);
+//         const result = await db.collection("users").updateOne({ _id }, { $set: { trips: trips } }); 
+//         client.close();
+//             console.log("disconnected!");
+//             res.status(201).json({ status: 201, data: result });
+//     } catch (err) {
+//         console.log(err);
+//         res.status(500).json({ status: 500, data: req.body, message: err.message });
+//     }
+//     }
+
+const addTrip = async (req, res) => {
+    try {
+        const client = new MongoClient(MONGO_URI, options);
+        await client.connect();
+        const db = client.db("travelTracker");
+        console.log("connected!");
+        req.body._id = uuidv4(); 
+        req.body.expenses = []; 
+        const result1 = await db.collection("trips").insertOne(req.body);
+        client.close();
+            console.log("disconnected!");
+            res.status(201).json({ status: 201, data: result1 });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ status: 500, data: req.body, message: err.message });
+    }
+}
+
+const getTrips = async (req, res) => {
+        try {
+            const client = new MongoClient(MONGO_URI, options);
+            const userId = req.params.userId
+            await client.connect();
+            const db = client.db("travelTracker");
+            console.log("connected!");
+            const result = await db.collection("trips").find({ userId }).toArray();
+            res.status(200).json({ status: 200, data: result } )   
+            client.close();
+            console.log("disconnected!");
+        } catch (err) {
+            return res.status(500).json({status: 500, data: "error", message: err.message})
+        }  
+    }
+
+const getTripById = async (req, res) => {
+    try {
+        const client = new MongoClient(MONGO_URI, options);
+        const _id = req.params.trip
+        await client.connect();
+        const db = client.db("travelTracker");
+        console.log("connected!");
+        const result = await db.collection("trips").findOne({ _id })
+        res.status(200).json({ status: 200, data: result } )   
+        client.close();
+        console.log("disconnected!");
+    } catch (err) {
+        return res.status(500).json({status: 500, data: "error", message: err.message})
+    }  
+}
+
+const editTrip = async (req, res) => {
+    try {
+        const client = new MongoClient(MONGO_URI, options);
+        await client.connect();
+        const db = client.db("travelTracker");
+        console.log("connected!");
+        const _id = req.params.trip; 
+        const queryResult = await db.collection("trips").findOne({ _id });
+
+        if (req.body.budget) {
+            queryResult.budget = req.body.budget;
+        }
+        if (req.body.endDate) {
+            queryResult.endDate = req.body.endDate;
+        }
+        if (req.body.startDate) {
+            queryResult.startDate = req.body.startDate;
+        }
+        if (req.body.tripName) {
+            queryResult.tripName = req.body.tripName;
+        }
+        const result = await db.collection("trips").updateOne({ _id }, { $set: { ...queryResult } }); 
+        client.close();
+            console.log("disconnected!");
+            res.status(201).json({ status: 201, data: result });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ status: 500, data: req.body, message: err.message });
+    }
+}
+
+const deleteTrip = async (req, res) => {
+    try {
+        const client = new MongoClient(MONGO_URI, options);
+        await client.connect();
+        const db = client.db("travelTracker");
+        console.log("connected!");
+        const _id = req.params.trip; 
+        const result = await db.collection("trips").deleteOne({_id});
+        client.close();
+        console.log("disconnected!");
+        res.status(200).json({ status: 200, data: result, message: "trip successfully deleted" });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ status: 500, data: req.body, message: err.message });
+    }
+}
+
+    const addExpense = async (req, res) => {
+        try {
+            const client = new MongoClient(MONGO_URI, options);
+            await client.connect();
+            const db = client.db("travelTracker");
+            console.log("connected!");
+            const _id = req.params.trip; 
+            const queryResult = await db.collection("trips").findOne({ _id });
+            req.body.expenseId = uuidv4(); 
+            queryResult.expenses.push(req.body)
+            const result = await db.collection("trips").updateOne({ _id }, { $set: { expenses: queryResult.expenses } }); 
+            client.close();
+            console.log("disconnected!");
+            res.status(201).json({ status: 201, data: result });
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({ status: 500, data: req.body, message: err.message });
+        }
+    }
+
+    const editExpense = async (req, res) => {
+        try {
+            const client = new MongoClient(MONGO_URI, options);
+            await client.connect();
+            const db = client.db("travelTracker");
+            console.log("connected!");
+            const _id = req.params.trip; 
+            const queryResult = await db.collection("trips").findOne({ _id });
+
+            if (req.body.name) {
+                queryResult.expenses.find(item => item.expenseId === req.params.expense).name = req.body.name;
+                }
+                if (req.body.category) {
+                queryResult.expenses.find(item => item.expenseId === req.params.expense).category = req.body.category;
+                }
+                if (req.body.date) {
+                queryResult.expenses.find(item => item.expenseId === req.params.expense).date = req.body.date;
+                }
+                if (req.body.amount) {
+                queryResult.expenses.find(item => item.expenseId === req.params.expense).amount = req.body.amount;
+                }
+                
+            const result = await db.collection("trips").updateOne({ _id }, { $set: { expenses: queryResult.expenses } }); 
+            client.close();
+                console.log("disconnected!");
+                res.status(200).json({ status: 200, data: result });
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({ status: 500, data: req.body, message: err.message });
+        }
+        }
+
+    const deleteExpense = async (req, res) => {
+        try {
+            const client = new MongoClient(MONGO_URI, options);
+            await client.connect();
+            const db = client.db("travelTracker");
+            console.log("connected!");
+            const _id = req.params.trip; 
+            const queryResult = await db.collection("trips").findOne({ _id });
+            const index = queryResult.expenses.findIndex(item => item.expenseId === req.params.expense) 
+            if (index < 0) 
+            {return res.status(400).json({status: 400, message: "Expense ID not found"})}
+            queryResult.expenses.splice(index, 1)
+            const result = await db.collection("trips").updateOne({ _id }, { $set: { expenses: queryResult.expenses } }); 
+            client.close();
+                console.log("disconnected!");
+                res.status(201).json({ status: 201, data: result });
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({ status: 500, data: req.body, message: err.message });
+        }
+        }
+
+    const getRate = async (req, res) => {
+        try {
+            const newRate = req.params.new
+            const baseRate = req.params.base
+            const result = await request(`https://api.exchangerate.host/convert?from=${newRate}&to=${baseRate}`);
+            const data = JSON.parse(result);
+            return (
+                res.status(200).json( {status: 200, data: data })
+            );
+        } catch (err) {
+            console.log(err);
+        }
+        };
+
+    const getHistoricalRate = async (req, res) => {
+        try {
+            const newRate = req.params.new
+            const baseRate = req.params.base
+            const date = req.params.date
+            const result = await request(`https://api.exchangerate.host/convert?from=${newRate}&to=${baseRate}&date=${date}`);
+            const data = JSON.parse(result);
+            return (
+                res.status(200).json( {status: 200, data: data })
+            );
+            } catch (err) {
+            console.log(err);
+            }
+        };
+
+module.exports = {
+    addTrip, 
+    getTrips,
+    getTripById,
+    deleteTrip, 
+    addExpense,
+    editTrip,
+    editExpense,
+    deleteExpense,
+    getRate,
+    getHistoricalRate
+};
