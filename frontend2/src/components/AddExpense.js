@@ -1,0 +1,300 @@
+import { useState } from "react";
+import styled from "styled-components"; 
+import { FiFilePlus, FiFileMinus } from "react-icons/fi"; 
+import { currency_list } from "../data";
+import {BiCalculator} from "react-icons/bi"; 
+import { CircularProgress } from "@mui/material";
+
+const AddExpense = ( {updateData, setUpdateData, tripId, baseCurrency} ) => {
+
+    const [creatingExpense, setCreatingExpense] = useState(false); 
+    const [usingCalculator, setUsingCalculator] = useState(false); 
+    const [formData, setFormData] = useState({amount: 0}); 
+    const [currencyData, setCurrencyData] = useState({rate: 0}); 
+
+    const handleCreate = () => {
+        if (creatingExpense) {
+            setFormData({amount: 0})
+            setCurrencyData({rate: 0})
+        }
+        setCreatingExpense(!creatingExpense)
+    }
+
+    const handleUsingCalculator = () => {
+        if (usingCalculator) {
+            setCurrencyData({rate: 0});
+        }
+        setUsingCalculator(!usingCalculator); 
+    }
+
+    const handleCurrencyChange = (key, value) => {
+
+        setCurrencyData({
+            ...currencyData,
+            [key]: value
+        })
+
+        if (currencyData.currency  && key === "currencyDate") {
+                fetch(`/getHistoricalRate/${currencyData.currency}/${baseCurrency}/${value}`)
+                .then(res => res.json())
+                .then((data) => {
+                    setCurrencyData({...currencyData, [key]: value, rate: data.data.result})
+                    if (currencyData.amount) {
+                        const convertedAmount = (data.data.result)*(currencyData.amount)
+                        setFormData({...formData, amount: convertedAmount.toFixed(2)})
+                    }
+                })
+                .catch((err) => {
+                    console.log(err); 
+            }) 
+        }
+
+        if (currencyData.currencyDate && key === "currency") {
+                fetch(`/getHistoricalRate/${value}/${baseCurrency}/${currencyData.currencyDate}`)
+                .then(res => res.json())
+                .then((data) => {
+                    setCurrencyData({...currencyData, [key]: value, rate: data.data.result})
+                    if (currencyData.amount) {
+                        const convertedAmount = (data.data.result)*(currencyData.amount)
+                        setFormData({...formData, amount: convertedAmount.toFixed(2)})
+                    }
+                })
+                .catch((err) => {
+                    console.log(err); 
+            }) 
+        }
+
+        if (currencyData.rate !== 0 && key === "amount") {
+            const convertedAmount = value*currencyData.rate
+            setFormData({...formData, amount: convertedAmount.toFixed(2)})
+        }
+
+        if (currencyData.amount && key === "rate") {
+            const convertedAmount = value*currencyData.amount
+            setFormData({...formData, amount: convertedAmount.toFixed(2)})
+        }
+    }
+
+    const handleChange = (key, value) => {
+        setFormData({
+            ...formData,
+            [key]: value,
+            })
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        setUpdateData("loading")
+        fetch(`/addExpense/${tripId}`, {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+                },
+            body: JSON.stringify(formData)
+            })
+                .then(res => res.json())
+                .then((data) => {
+                    console.log(data);
+                    setUpdateData(data);
+                    setFormData({amount: 0});
+                    setCreatingExpense(false); 
+                    setCurrencyData({rate: 0})
+                })
+                .catch((error) => {
+                    window.alert(error);
+                })
+    }
+
+    return (
+        <Wrapper> 
+            <button onClick={handleCreate}>{creatingExpense ? <FiFileMinus /> : <FiFilePlus /> } <span>{creatingExpense ? "Cancel" : "Add Expense" }</span></button>
+            { creatingExpense &&
+            <div className="form">
+                <form onSubmit={handleSubmit}>
+                        <div className="field">
+                            <label htmlFor="tripName">name </label>
+                            <input required placeholder='e.g. "Pizza lunch"'className="textInput" type="text" id="name" onChange={(e) => handleChange(e.target.id, e.target.value)} />
+                        </div>
+                        <div className="field">
+                            <label htmlFor="type">category</label>
+                            <select required className="form-select" id="category" name="category" onChange={(e) => handleChange(e.target.id, e.target.value)}>
+                                    <option value=''>Select category</option>
+                                    <option value="Groceries">Groceries</option>
+                                    <option value="Restaurants/Bars">Restaurants/Bars</option>
+                                    <option value="Transportation">Transportation</option>
+                                    <option value="Accommodations">Accommodations</option>
+                                    <option value="Health/Hygiene">Health/Hygiene</option>
+                                    <option value="Entertainment/Sightseeing">Entertainment/Sightseeing</option>
+                                    <option value="Souvenirs/Gifts">Souvenirs/Gifts</option>
+                                    <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div className="field">
+                            <label htmlFor="startDate">date </label>
+                            <input required className="dateInput" type="date" id="date" onChange={(e) => handleChange(e.target.id, e.target.value)} />
+                        </div>
+                        <div className="field">
+                            <label htmlFor="amount">amount - {baseCurrency}</label>
+                            <input required className="numberInput" value={formData.amount} type="number" step=".01" id="amount" onChange={(e) => handleChange(e.target.id, e.target.value)} />
+                        </div>
+                        <div className="submitButton">
+                            <button> {updateData == "loading" ? <CircularProgress style={{'color': 'white'}} size="1em" /> : <><FiFilePlus/> <span>Add Expense</span></>} </button>
+                        </div>
+                </form>
+                <div className="currency">
+                    { usingCalculator 
+                    ?
+                    <div>
+                    <div className="field">
+                            <label htmlFor="currency">currency </label>
+                            <select className="form-select" id="currency" name="currency" onChange={(e) => handleCurrencyChange(e.target.id, e.target.value)}>
+                                    <optgroup>
+                                        <option value=''>Select currency</option>
+                                            { currency_list.map((item) => {
+                                                    return (
+                                                        <option value={item.code}>{item.code} - {item.name}</option>
+                                                    )
+                                                })
+                                            }
+                                    </optgroup>
+                            </select>
+                    </div>
+                    <div className="field">
+                            <label htmlFor="currencyDate">exchange date </label>
+                            <input required className="dateInput" max={new Date().toJSON().slice(0, 10)} type="date" id="currencyDate" onChange={(e) => handleCurrencyChange(e.target.id, e.target.value)} />
+                    </div>
+                    <div className="field">
+                            <label htmlFor="rate">rate </label>
+                            <input className="numberInput" value={currencyData.rate} type="number" step=".000001" id="rate" onChange={(e) => handleCurrencyChange(e.target.id, e.target.value)} />
+                    </div>
+                    <div className="field">
+                            <label htmlFor="amount">amount {currencyData.currency ? ` - ${currencyData.currency}` : ""}</label>
+                            <input required className="numberInput" type="number" step=".01" id="amount" onChange={(e) => handleCurrencyChange(e.target.id, e.target.value)} />
+                    </div>
+                    </div> 
+                    :
+                    <div className="emptySpace">
+                        <p>If you paid for your expense with a currency other than {baseCurrency}, click below to use the optional currency converter!</p>
+                    </div>
+                    }
+                    <div className="submitButton">
+                        <button onClick={handleUsingCalculator} className="conversiontool"><BiCalculator /> <span>{usingCalculator? "Cancel" : "Currency Converter"}</span></button>
+                    </div>
+                </div>
+                
+            </div>
+            }
+        </Wrapper>
+)
+}
+
+const Wrapper = styled.div`
+margin-top: 10px; 
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center; 
+
+.form {
+    margin-top: 10px; 
+    margin-bottom: 10px;  
+    padding: 10px 20px 10px 20px; 
+    display: flex; 
+    flex-direction: row; 
+    justify-content: space-around; 
+    background-color: #fcfbe3;
+    opacity: 0.75; 
+    width: 60vw;
+    border-radius: 5px;  
+    font-family: var(--font-carterone)
+}
+
+.currency {
+    padding: 10px 20px 10px 20px 
+    display: flex; 
+    flex-direction: column; 
+}
+
+.currencyTitle {
+    font-family: var(--font-raleway);
+    text-align: center; 
+    margin-bottom: 20px; 
+}
+
+input, select, optgroup {
+    font-family: var(--font-raleway)
+}
+
+.field {
+    width: 240px;  
+    margin: 0px 10px 10px 0px; 
+    display: flex; 
+    flex-direction: row; 
+    justify-content: space-between; 
+    align-items: center; 
+}
+
+.numberInput, .textInput {
+    width: 112px; 
+}
+
+.dateInput {
+    width: 115px; 
+}
+
+.form-select,  {
+    width: 120px;
+}
+
+.submitButton {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+}
+
+button, .conversiontool {
+    background-color: #17918b; 
+    border: none;
+    border-radius: 10px; 
+    height: 40px; 
+    width: 200px; 
+    color: #fcfbe3; 
+    font-family: var(--font-poppins);
+    font-size: 1em;  
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    span {
+        margin-left: 5px; 
+    }
+}
+
+.emptySpace {
+    height: 124px; 
+    width: 250px; 
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    flex-direction: column; 
+    p {
+        font-family: var(--font-raleway);
+        margin-bottom: 5px; 
+        text-align: center; 
+    }
+}
+
+.converter {
+    background-color: white;
+    width: 180px; 
+    color: black; 
+    align-self: flex-end; 
+}
+
+button:hover {
+    cursor: pointer; 
+}
+
+`; 
+
+export default AddExpense; 
