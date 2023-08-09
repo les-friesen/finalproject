@@ -1,12 +1,12 @@
-import styled from 'styled-components'
 import { FiTrash2 } from 'react-icons/fi';
 import EditableField from './EditableField';
 
-const Expense = ( {expenseDetails, setUpdateData, tripId} ) => {
+const Expense = ( {expenseDetails, updateData, setUpdateData, tripId} ) => {
 
     const { name, category, date, amount, expenseId } = expenseDetails; 
 
     const handleDelete = () => {
+        setUpdateData("loading");
         fetch(`/deleteExpense/${tripId}/${expenseId}`, {
             method: "DELETE"
         })
@@ -30,6 +30,5 @@ const Expense = ( {expenseDetails, setUpdateData, tripId} ) => {
         </tr>
     )
 }
-
 
 export default Expense;

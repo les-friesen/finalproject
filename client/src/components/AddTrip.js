@@ -57,7 +57,7 @@ const AddTrip = ( {updateData, setUpdateData} ) => {
                 <form onSubmit={handleSubmit}>
                         <div className="field">
                             <label htmlFor="tripName">Trip Name </label>
-                            <input required placeholder='e.g. "Europe 2022"'className="textInput" type="text" id="tripName" onChange={(e) => handleChange(e.target.id, e.target.value)} />
+                            <input required placeholder='e.g. "Europe 2022"'className="textInput" type="text" maxlength="40" id="tripName" onChange={(e) => handleChange(e.target.id, e.target.value)} />
                         </div>
                         <div className="field">
                             <label htmlFor="startDate">Start Date </label>
@@ -87,7 +87,7 @@ const AddTrip = ( {updateData, setUpdateData} ) => {
                         </div>
                         <p className="disclaimer">Once your trip is created, all fields can be edited except base currency </p>
                         <div className="submitButton">
-                            <button>{updateData == "loading" ? <CircularProgress style={{'color': 'white'}} size="1em" /> : <><FiFilePlus/> <span>Create Trip </span></>}</button>
+                            <button>{updateData === "loading" ? <CircularProgress style={{'color': 'white'}} size="1em" /> : <><FiFilePlus/> <span>Create Trip </span></>}</button>
                         </div>
                 </form>
             </div>

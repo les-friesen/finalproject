@@ -114,7 +114,7 @@ const AddExpense = ( {updateData, setUpdateData, tripId, baseCurrency} ) => {
                 <form onSubmit={handleSubmit}>
                         <div className="field">
                             <label htmlFor="tripName">name </label>
-                            <input required placeholder='e.g. "Pizza lunch"'className="textInput" type="text" id="name" onChange={(e) => handleChange(e.target.id, e.target.value)} />
+                            <input required placeholder='e.g. "Pizza lunch"'className="textInput" maxlength="40" type="text" id="name" onChange={(e) => handleChange(e.target.id, e.target.value)} />
                         </div>
                         <div className="field">
                             <label htmlFor="type">category</label>
@@ -139,7 +139,7 @@ const AddExpense = ( {updateData, setUpdateData, tripId, baseCurrency} ) => {
                             <input required className="numberInput" value={formData.amount} type="number" step=".01" id="amount" onChange={(e) => handleChange(e.target.id, e.target.value)} />
                         </div>
                         <div className="submitButton">
-                            <button> {updateData == "loading" ? <CircularProgress style={{'color': 'white'}} size="1em" /> : <><FiFilePlus/> <span>Add Expense</span></>} </button>
+                            <button> {updateData === "loading" ? <CircularProgress style={{'color': 'white'}} size="1em" /> : <><FiFilePlus/> <span>Add Expense</span></>} </button>
                         </div>
                 </form>
                 <div className="currency">

@@ -76,6 +76,7 @@ const EditableField = ({ field, inputType, initialValue, tripId, setUpdateData, 
           value={inputValue}
           onChange={handleChange}
           onBlur={handleBlur}
+          maxlength={inputType === "text" ? "40" : null}
         />)
        : (
         <span className="text">{inputValue}</span>

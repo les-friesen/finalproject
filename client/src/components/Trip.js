@@ -41,28 +41,36 @@ return (
         <div className="title">
             <EditableField inputType="text" field="tripName" initialValue={tripName} tripId={_id} setUpdateData={setUpdateData}/>
         </div>
-        <div>
+        <div className="paragraph">
             <EditableField inputType="date" field="startDate" initialValue={startDate} tripId={_id} setUpdateData={setUpdateData}/>
             <span> to </span>
             <EditableField inputType="date" field="endDate" initialValue={endDate} tripId={_id} setUpdateData={setUpdateData} />
         </div>
-        <div> 
+        <div className="paragraph"> 
             <span>Total Budget: </span> 
             <EditableField inputType="number" field="budget" initialValue={budget} tripId={_id} setUpdateData={setUpdateData} />
             <span>  {currency}</span>
         </div>
-        <div className="lastRow">
+        <div className="paragraph">
             <p> You have spent {total} {currency} so far, which is {calcPercent(total, budget)} of your allotted budget. </p>
+            
+        </div>
+        <div className="lastRow">
+            <div className="empty"></div>
+            <div className="expenseButton">
+                <StyledLink to={`/${_id}`}><button><FiFilePlus/> <span>Add/Edit Expenses</span></button></StyledLink>
+            </div>
             <div className="buttonWrapper">
                 <button onClick={handleDelete}><FiTrash2 size={20}/></button>
             </div>
         </div>
-        <div className="expenseButton">
-            <Link to={`/${_id}`}><button><FiFilePlus/> <span>Add/Edit Expenses</span></button></Link>
-        </div>
     </Wrapper>
 )
 }
+
+const StyledLink = styled(Link)`
+text-decoration: none; 
+`
 
 const Wrapper = styled.div`
 margin: 20px; 
@@ -74,7 +82,7 @@ opacity: 0.75;
 width: 80vw;
 border-radius: 5px;  
 
-div, p {
+.paragraph, p {
     margin-top: 5px; 
     margin-bottom: 5px; 
 }
@@ -107,6 +115,10 @@ input[type="number"] {
     justify-content: space-between; 
 }
 
+.empty {
+    width: 40px; 
+}
+
 .buttonWrapper {
     display: flex;
     justify-content: flex-end; 
@@ -135,7 +147,7 @@ input[type="number"] {
         border: none;
         border-radius: 10px; 
         height: 40px; 
-        width: 180px; 
+        width: 200px; 
         color: #fcfbe3; 
         font-family: var(--font-poppins);
         font-size: 1em; 

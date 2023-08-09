@@ -97,7 +97,7 @@ return (
                     {
                         tripData.expenses.map((expense) => {
                             return (
-                                <Expense key={expense.expenseId} expenseDetails={expense} setUpdateData={setUpdateData} tripId={tripData._id}/>
+                                <Expense key={expense.expenseId} expenseDetails={expense} updateData={updateData} setUpdateData={setUpdateData} tripId={tripData._id}/>
                             )
                         })
                     }

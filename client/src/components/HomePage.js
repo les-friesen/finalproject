@@ -71,9 +71,7 @@ const HomePage = () => {
             <span>Welcome {user.nickname}! {tripData.length > 1 ? `You have created ${tripData.length} trips so far!` : tripData.length === 1 ? "You have created 1 trip so far!" : "Start by creating your first trip"}  </span>
             </div>
             <AddTrip updateData={updateData} setUpdateData={setUpdateData}/>
-            {
-             
-            tripData.map((trip, index) => {
+            { tripData.map((trip, index) => {
                 return (
                     <Trip key={tripData[index]._id} tripData={trip} setUpdateData={setUpdateData}/> 
                 )
