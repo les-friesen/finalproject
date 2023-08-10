@@ -1,13 +1,5 @@
-// Shows overall budget, what you've spent so far
-// Displays all trip details
-
-// Displays all expenses. At top (or bottom) add button to add expense 
-// After fetching data based on tripId, check to make sure userId of the trip
-// matches the user.sub in the Auth0Provider. If not a match - navigate to home page
-
 // If data is fetched before user confirmed, it's rerouting back to homepage :S
-// Features to add: Sort data by different fields. Add custom categories?
-
+// Add custom categories?
 
 import { useAuth0 } from "@auth0/auth0-react";
 import beach1 from "../assets/beach1.jpg"
@@ -16,8 +8,9 @@ import { useParams, useNavigate } from "react-router-dom"
 import { useState, useEffect } from "react";
 import { CircularProgress } from "@mui/material";
 import EditableField from "./EditableField";
-import Expense from "./Expense";
 import AddExpense from "./AddExpense";
+import { calcPercent, calcTotal, sortTableData } from "../helpers";
+import SortableTable from "./SortableTable";
 
 const TripDetails = () => {
 
@@ -26,6 +19,9 @@ const TripDetails = () => {
     const [ tripData, setTripData ] = useState(); 
     const [ updateData, setUpdateData] = useState(); 
     const navigate = useNavigate(); 
+    const [sortedItems, setSortedItems] = useState();
+    const [direction, setDirection] = useState()
+    const [sortBy, setSortBy] = useState()
 
     useEffect(() => {
         fetch(`/getTrip/${tripId}`)
@@ -34,26 +30,18 @@ const TripDetails = () => {
                 if (!data.data) {
                     navigate("/") }
                 else {
-                    setTripData(data.data) 
+                    setTripData(data.data)
+                    if (direction && sortBy) {
+                        setSortedItems(sortTableData(data.data.expenses, {sortBy, direction}))
+                    } else {
+                        setSortedItems(data.data.expenses)
+                    }
                 }
             })
             .catch((err) => {
                 console.log(err); 
         }) 
     }, [updateData])
-
-    const calcTotal = (array) => {
-        let total = 0;
-        array.forEach((item) => {
-            total += +item.amount
-        })
-        return total.toFixed(2)
-    }
-    
-    const calcPercent = (amount, budget) => {
-        const percent = (+amount/+budget)*100
-        return `${percent.toFixed(1)}%`
-    }
 
 return (
     <Background>
@@ -83,26 +71,23 @@ return (
                     </div> 
                     <div>This is the trip details page. You have {tripData.expenses.length} expenses so far</div>
                 </div>
-                <AddExpense updateData={updateData} setUpdateData={setUpdateData} tripId={tripData._id} baseCurrency={tripData.currency}/>
+                <AddExpense 
+                    updateData={updateData} 
+                    setUpdateData={setUpdateData} 
+                    tripId={tripData._id} 
+                    baseCurrency={tripData.currency}/>
                 { tripData.expenses.length > 0 && 
-                <table>
-                    <tbody>
-                    <tr>
-                        <th>name</th>
-                        <th>category</th>
-                        <th>date</th>
-                        <th>amount - {tripData.currency}</th>
-                        <th>delete</th>
-                    </tr>
-                    {
-                        tripData.expenses.map((expense) => {
-                            return (
-                                <Expense key={expense.expenseId} expenseDetails={expense} updateData={updateData} setUpdateData={setUpdateData} tripId={tripData._id}/>
-                            )
-                        })
-                    }
-                    </tbody>
-                </table>
+                <SortableTable 
+                    direction={direction} 
+                    setDirection={setDirection} 
+                    setSortBy={setSortBy} 
+                    sortedItems={sortedItems} 
+                    setSortedItems={setSortedItems} 
+                    expenses={tripData.expenses} 
+                    currency={tripData.currency} 
+                    updateData={updateData} 
+                    setUpdateData={setUpdateData} 
+                    tripId={tripData._id}/>
                 }
             </>
         }
@@ -164,56 +149,6 @@ min-height: 100vh;
     
     .title {
         font-size: 2em; 
-    }
-}
-
-table {
-    margin-top: 10px; 
-    margin-bottom: 30px; 
-    width: 85vw;
-    font-family: var(--font-raleway);
-
-    tr {
-        
-        height: 40px; 
-        background-color: white;  
-        color: black; 
-        border: solid grey 2px;  
-        border-radius: 10px;     
-    }
-
-    td, th {
-        padding-left: 5px; 
-        padding-right: 5px; 
-        display: table-cell; 
-        vertical-align: middle; 
-    }
-
-    th {
-        text-align: left;
-        font-family: var(--font-carterone); 
-        color: #fcfbe3;
-        font-weight: 900; 
-        background-color: #17918b; 
-    }
-
-    button {
-        background: transparent; 
-        border: none; 
-
-        :hover {
-            cursor: pointer; 
-        }    
-    }
-
-    input, select {
-        font-family: var(--font-raleway); 
-        background: transparent;
-        border: none;
-    }
-    
-    input[type="number"] {
-        width: 50px; 
     }
 }
 `

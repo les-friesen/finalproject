@@ -24,9 +24,9 @@ const Expense = ( {expenseDetails, updateData, setUpdateData, tripId} ) => {
         <tr>
             <td><EditableField initialValue={name} inputType="text" field="name" tripId={tripId} expenseId={expenseId} setUpdateData={setUpdateData} /></td>
             <td><EditableField initialValue={category} inputType="select" field="category" tripId={tripId} expenseId={expenseId} setUpdateData={setUpdateData} /></td>
-            <td><EditableField initialValue={date} inputType="date" field="name" tripId={tripId} expenseId={expenseId} setUpdateData={setUpdateData} /></td>
+            <td><EditableField initialValue={date} inputType="date" field="date" tripId={tripId} expenseId={expenseId} setUpdateData={setUpdateData} /></td>
             <td><EditableField initialValue={amount} inputType="number" field="amount" tripId={tripId} expenseId={expenseId} setUpdateData={setUpdateData} /></td>
-            <td><button onClick={handleDelete}><FiTrash2/></button></td>
+            <td><button className="delete" onClick={handleDelete}><FiTrash2/></button></td>
         </tr>
     )
 }

@@ -2,25 +2,13 @@ import styled from "styled-components";
 import { FiTrash2, FiFilePlus } from "react-icons/fi";
 import EditableField from "./EditableField";
 import { Link } from "react-router-dom";
+import { calcPercent, calcTotal } from "../helpers";
 
 const Trip = ( {tripData, setUpdateData} ) => {
 
 const { tripName, startDate, endDate, currency, expenses, budget, _id } = tripData; 
 
-const calcTotal = (array) => {
-    let total = 0;
-    array.forEach((item) => {
-        total += +item.amount
-    })
-    return total.toFixed(2)
-}
-
 const total = calcTotal(expenses);
-
-const calcPercent = (amount, budget) => {
-    const percent = (+amount/+budget)*100
-    return `${percent.toFixed(1)}%`
-}
 
 const handleDelete = () => {
     fetch(`/deleteTrip/${_id}`, {
