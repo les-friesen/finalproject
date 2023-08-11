@@ -4,6 +4,7 @@ import { FiFilePlus, FiFileMinus } from "react-icons/fi";
 import { currency_list } from "../data";
 import {BiCalculator} from "react-icons/bi"; 
 import { CircularProgress } from "@mui/material";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const AddExpense = ( {updateData, setUpdateData, tripId, baseCurrency} ) => {
 
@@ -11,6 +12,7 @@ const AddExpense = ( {updateData, setUpdateData, tripId, baseCurrency} ) => {
     const [usingCalculator, setUsingCalculator] = useState(false); 
     const [formData, setFormData] = useState({amount: 0}); 
     const [currencyData, setCurrencyData] = useState({rate: 0}); 
+    const { getAccessTokenSilently } = useAuth0(); 
 
     const handleCreate = () => {
         if (creatingExpense) {
@@ -28,7 +30,6 @@ const AddExpense = ( {updateData, setUpdateData, tripId, baseCurrency} ) => {
     }
 
     const handleCurrencyChange = (key, value) => {
-
         setCurrencyData({
             ...currencyData,
             [key]: value
@@ -82,28 +83,32 @@ const AddExpense = ( {updateData, setUpdateData, tripId, baseCurrency} ) => {
             })
     }
 
+    const addExpense = async () => {
+        try {
+            const token = await getAccessTokenSilently();
+            const response = await fetch(`/addExpense/${tripId}`, {
+                method: "POST",
+                headers : {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                    "authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(formData)
+                })
+            const data = await response.json();
+                setUpdateData(data);
+                setFormData({amount: 0});
+                setCreatingExpense(false); 
+                setCurrencyData({rate: 0}) 
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        setUpdateData("loading")
-        fetch(`/addExpense/${tripId}`, {
-            method: "POST",
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-                },
-            body: JSON.stringify(formData)
-            })
-                .then(res => res.json())
-                .then((data) => {
-                    console.log(data);
-                    setUpdateData(data);
-                    setFormData({amount: 0});
-                    setCreatingExpense(false); 
-                    setCurrencyData({rate: 0})
-                })
-                .catch((error) => {
-                    window.alert(error);
-                })
+        setUpdateData("loading");
+        addExpense(); 
     }
 
     return (
@@ -114,7 +119,7 @@ const AddExpense = ( {updateData, setUpdateData, tripId, baseCurrency} ) => {
                 <form onSubmit={handleSubmit}>
                         <div className="field">
                             <label htmlFor="tripName">name </label>
-                            <input required placeholder='e.g. "Pizza lunch"'className="textInput" maxlength="40" type="text" id="name" onChange={(e) => handleChange(e.target.id, e.target.value)} />
+                            <input required placeholder='e.g. "Pizza lunch"'className="textInput" maxLength="40" type="text" id="name" onChange={(e) => handleChange(e.target.id, e.target.value)} />
                         </div>
                         <div className="field">
                             <label htmlFor="type">category</label>

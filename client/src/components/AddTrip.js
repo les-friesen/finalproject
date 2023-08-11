@@ -9,7 +9,7 @@ const AddTrip = ( {updateData, setUpdateData} ) => {
 
     const [creatingTrip, setCreatingTrip] = useState(false); 
     const [formData, setFormData] = useState(); 
-    const { user } = useAuth0(); 
+    const { user, getAccessTokenSilently } = useAuth0(); 
 
     const handleCreate = () => {
         if (creatingTrip) {
@@ -26,27 +26,31 @@ const AddTrip = ( {updateData, setUpdateData} ) => {
             })
     }
 
+    const AddTrip = async () => {
+        try {
+            const token = await getAccessTokenSilently();
+            const response = await fetch(`/addTrip`, {
+                method: "POST",
+                headers : {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                    "authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(formData)
+                })
+            const data = await response.json();
+                setUpdateData(data);
+                setFormData();
+                setCreatingTrip(false); 
+        } catch (error) {
+            console.log(error);
+        }
+        }
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        setUpdateData("loading")
-        fetch("/addTrip", {
-            method: "POST",
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-                },
-            body: JSON.stringify(formData)
-            })
-                .then(res => res.json())
-                .then((data) => {
-                    console.log(data);
-                    setUpdateData(data);
-                    setFormData();
-                    setCreatingTrip(false); 
-                })
-                .catch((error) => {
-                    window.alert(error);
-                })
+        setUpdateData("loading");
+        AddTrip(); 
     }
 
     return (
@@ -57,7 +61,7 @@ const AddTrip = ( {updateData, setUpdateData} ) => {
                 <form onSubmit={handleSubmit}>
                         <div className="field">
                             <label htmlFor="tripName">Trip Name </label>
-                            <input required placeholder='e.g. "Europe 2022"'className="textInput" type="text" maxlength="40" id="tripName" onChange={(e) => handleChange(e.target.id, e.target.value)} />
+                            <input required placeholder='e.g. "Europe 2022"'className="textInput" type="text" maxLength="40" id="tripName" onChange={(e) => handleChange(e.target.id, e.target.value)} />
                         </div>
                         <div className="field">
                             <label htmlFor="startDate">Start Date </label>

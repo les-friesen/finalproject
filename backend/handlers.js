@@ -144,6 +144,9 @@ const addTrip = async (req, res) => {
 
 const getTrips = async (req, res) => {
         try {
+            if (req.params.userId !== req.auth.payload.sub ) {
+                return res.status(401).json({status: 401, data: null, message: "Unauthorized"})
+            }
             const client = new MongoClient(MONGO_URI, options);
             const userId = req.params.userId
             await client.connect();
@@ -166,7 +169,12 @@ const getTripById = async (req, res) => {
         const db = client.db("travelTracker");
         console.log("connected!");
         const result = await db.collection("trips").findOne({ _id })
-        res.status(200).json({ status: 200, data: result } )   
+        
+        !result 
+            ? res.status(404).json({ status: 404, data: null, message: "Not found" })
+            : result.userId !== req.auth.payload.sub 
+            ? res.status(401).json({status: 401, data: null, message: "Unauthorized"})
+            : res.status(200).json({ status: 200, data: result })
         client.close();
         console.log("disconnected!");
     } catch (err) {
@@ -183,6 +191,9 @@ const editTrip = async (req, res) => {
         const _id = req.params.trip; 
         const queryResult = await db.collection("trips").findOne({ _id });
 
+        if (queryResult.userId !== req.auth.payload.sub ) {
+            return res.status(401).json({status: 401, data: null, message: "Unauthorized"})
+        }
         if (req.body.budget) {
             queryResult.budget = req.body.budget;
         }
@@ -212,6 +223,10 @@ const deleteTrip = async (req, res) => {
         const db = client.db("travelTracker");
         console.log("connected!");
         const _id = req.params.trip; 
+        const queryResult = await db.collection("trips").findOne({ _id });
+        if (queryResult.userId !== req.auth.payload.sub ) {
+            return res.status(401).json({status: 401, data: null, message: "Unauthorized"})
+        }
         const result = await db.collection("trips").deleteOne({_id});
         client.close();
         console.log("disconnected!");
@@ -230,6 +245,11 @@ const deleteTrip = async (req, res) => {
             console.log("connected!");
             const _id = req.params.trip; 
             const queryResult = await db.collection("trips").findOne({ _id });
+            
+            if (queryResult.userId !== req.auth.payload.sub ) {
+                return res.status(401).json({status: 401, data: null, message: "Unauthorized"})
+            }
+
             req.body.expenseId = uuidv4(); 
             queryResult.expenses.push(req.body)
             const result = await db.collection("trips").updateOne({ _id }, { $set: { expenses: queryResult.expenses } }); 
@@ -250,6 +270,10 @@ const deleteTrip = async (req, res) => {
             console.log("connected!");
             const _id = req.params.trip; 
             const queryResult = await db.collection("trips").findOne({ _id });
+
+            if (queryResult.userId !== req.auth.payload.sub ) {
+                return res.status(401).json({status: 401, data: null, message: "Unauthorized"})
+            }
 
             if (req.body.name) {
                 queryResult.expenses.find(item => item.expenseId === req.params.expense).name = req.body.name;
@@ -282,6 +306,11 @@ const deleteTrip = async (req, res) => {
             console.log("connected!");
             const _id = req.params.trip; 
             const queryResult = await db.collection("trips").findOne({ _id });
+            
+            if (queryResult.userId !== req.auth.payload.sub ) {
+                return res.status(401).json({status: 401, data: null, message: "Unauthorized"})
+            }
+
             const index = queryResult.expenses.findIndex(item => item.expenseId === req.params.expense) 
             if (index < 0) 
             {return res.status(400).json({status: 400, message: "Expense ID not found"})}
@@ -295,20 +324,6 @@ const deleteTrip = async (req, res) => {
             res.status(500).json({ status: 500, data: req.body, message: err.message });
         }
         }
-
-    const getRate = async (req, res) => {
-        try {
-            const newRate = req.params.new
-            const baseRate = req.params.base
-            const result = await request(`https://api.exchangerate.host/convert?from=${newRate}&to=${baseRate}`);
-            const data = JSON.parse(result);
-            return (
-                res.status(200).json( {status: 200, data: data })
-            );
-        } catch (err) {
-            console.log(err);
-        }
-        };
 
     const getHistoricalRate = async (req, res) => {
         try {
@@ -334,6 +349,5 @@ module.exports = {
     editTrip,
     editExpense,
     deleteExpense,
-    getRate,
     getHistoricalRate
 };

@@ -64,11 +64,10 @@ const Wrapper = styled.div`
 table {
     margin-top: 10px; 
     margin-bottom: 30px; 
-    width: 85vw;
+    width: calc(85vw + 40px); 
     font-family: var(--font-raleway);
 
     tr {
-        
         height: 40px; 
         background-color: white;  
         color: black; 

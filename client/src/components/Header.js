@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 
 const Header = ( {loginWithPopup, logout, isAuthenticated }) => {
 
-const handleSignUp = () => { 
-    loginWithPopup({authorizationParams: {
-        screen_hint: "signup",
-    }}); 
-}
+    const handleSignUp = () => { 
+        loginWithPopup({authorizationParams: {
+            screen_hint: "signup",
+        }}); 
+    }
 
     return (
     <NavBar>
@@ -20,13 +20,12 @@ const handleSignUp = () => {
             </div>
         }
     </NavBar>
-
     )
 }
 
 const StyledLink = styled(Link)`
 text-decoration: none; 
-margin-left: 8vw; 
+margin-left: calc(7.5vw - 20px); 
 `
 
 const NavBar = styled.div`
@@ -55,9 +54,14 @@ button {
     border-radius: 10px; 
     height: 30px; 
     width: 80px; 
-    margin-right: 8vw; 
+    margin-right: calc(7.5vw - 20px); 
     font-family: var(--font-carterone); 
     margin-top: 0; 
+    
+}
+
+button:hover {
+    cursor: pointer; 
 }
 `; 
 

@@ -3,57 +3,81 @@ import { FiTrash2, FiFilePlus } from "react-icons/fi";
 import EditableField from "./EditableField";
 import { Link } from "react-router-dom";
 import { calcPercent, calcTotal } from "../helpers";
+import ProgressBar from "./ProgressBar";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const Trip = ( {tripData, setUpdateData} ) => {
 
-const { tripName, startDate, endDate, currency, expenses, budget, _id } = tripData; 
+    const { tripName, startDate, endDate, currency, expenses, budget, _id } = tripData; 
+    const { getAccessTokenSilently } = useAuth0(); 
+    const total = calcTotal(expenses);
 
-const total = calcTotal(expenses);
-
-const handleDelete = () => {
-    fetch(`/deleteTrip/${_id}`, {
-        method: "DELETE"
-    })
-    .then(res => res.json())
-    .then((data) => {
-            setUpdateData(data)
-            console.log(data)
+    const handleDelete = async () => {
+        try {
+            const token = await getAccessTokenSilently();
+            const response = await fetch(`/deleteTrip/${_id}`, {
+                method: "DELETE",
+                headers : {
+                    "authorization": `Bearer ${token}`
+                }
             })
-    .catch((err) => {
-            console.log(err); 
-})
-}
+            const data = await response.json();
+                setUpdateData(data)
+        } catch (error) {
+        console.log(error);
+        }
+    }
 
-return (
-    <Wrapper>
-        <div className="title">
-            <EditableField inputType="text" field="tripName" initialValue={tripName} tripId={_id} setUpdateData={setUpdateData}/>
-        </div>
-        <div className="paragraph">
-            <EditableField inputType="date" field="startDate" initialValue={startDate} tripId={_id} setUpdateData={setUpdateData}/>
-            <span> to </span>
-            <EditableField inputType="date" field="endDate" initialValue={endDate} tripId={_id} setUpdateData={setUpdateData} />
-        </div>
-        <div className="paragraph"> 
-            <span>Total Budget: </span> 
-            <EditableField inputType="number" field="budget" initialValue={budget} tripId={_id} setUpdateData={setUpdateData} />
-            <span>  {currency}</span>
-        </div>
-        <div className="paragraph">
-            <p> You have spent {total} {currency} so far, which is {calcPercent(total, budget)} of your allotted budget. </p>
-            
-        </div>
-        <div className="lastRow">
-            <div className="empty"></div>
-            <div className="expenseButton">
-                <StyledLink to={`/${_id}`}><button><FiFilePlus/> <span>Add/Edit Expenses</span></button></StyledLink>
+    return (
+        <Wrapper>
+            <div className="title">
+                <EditableField  
+                    inputType="text" 
+                    field="tripName" 
+                    initialValue={tripName} 
+                    tripId={_id} 
+                    setUpdateData={setUpdateData}/>
             </div>
-            <div className="buttonWrapper">
-                <button onClick={handleDelete}><FiTrash2 size={20}/></button>
+            <div className="paragraph">
+                <EditableField 
+                    inputType="date" 
+                    field="startDate" 
+                    initialValue={startDate} 
+                    tripId={_id} 
+                    setUpdateData={setUpdateData}/>
+                <span> to </span>
+                <EditableField 
+                    inputType="date" 
+                    field="endDate" 
+                    initialValue={endDate} 
+                    tripId={_id} 
+                    setUpdateData={setUpdateData}/>
             </div>
-        </div>
-    </Wrapper>
-)
+            <div className="paragraph"> 
+                <span>Total Budget: </span> 
+                <EditableField 
+                    inputType="number" 
+                    field="budget" 
+                    initialValue={budget} 
+                    tripId={_id} 
+                    setUpdateData={setUpdateData} />
+                <span>  {currency}</span>
+            </div>
+            <div className="paragraph">
+                <p> You have spent {total} {currency} so far, which is {calcPercent(total, budget)}% of your allotted budget. </p>
+            </div>
+            <ProgressBar completed={calcPercent(total, budget)} />
+            <div className="lastRow">
+                <div className="empty"></div>
+                <div className="expenseButton">
+                    <StyledLink to={`/${_id}`}><button><FiFilePlus/> <span>Add/Edit Expenses</span></button></StyledLink>
+                </div>
+                <div className="buttonWrapper">
+                    <button onClick={handleDelete}><FiTrash2 size={20}/></button>
+                </div>
+            </div>
+        </Wrapper>
+    )
 }
 
 const StyledLink = styled(Link)`
@@ -67,7 +91,7 @@ display: flex;
 flex-direction: column; 
 background-color: #fcfbe3;
 opacity: 0.75; 
-width: 80vw;
+width: 85vw;
 border-radius: 5px;  
 
 .paragraph, p {
@@ -127,7 +151,6 @@ input[type="number"] {
     display: flex;
     flex-direction: row;
     justify-content: center;
-  
 
     button {
         text-decoration: none; 

@@ -1,23 +1,27 @@
 import { FiTrash2 } from 'react-icons/fi';
 import EditableField from './EditableField';
+import { useAuth0 } from "@auth0/auth0-react";
 
-const Expense = ( {expenseDetails, updateData, setUpdateData, tripId} ) => {
+const Expense = ( {expenseDetails, setUpdateData, tripId} ) => {
 
+    const { getAccessTokenSilently } = useAuth0(); 
     const { name, category, date, amount, expenseId } = expenseDetails; 
 
-    const handleDelete = () => {
-        setUpdateData("loading");
-        fetch(`/deleteExpense/${tripId}/${expenseId}`, {
-            method: "DELETE"
-        })
-        .then(res => res.json())
-        .then((data) => {
+    const handleDelete = async () => {
+        try {
+            const token = await getAccessTokenSilently();
+            const response = await fetch(`/deleteExpense/${tripId}/${expenseId}`, {
+                method: "DELETE",
+                headers : {
+                    "authorization": `Bearer ${token}`
+                }
+            })
+            const data = await response.json();
                 setUpdateData(data)
                 console.log(data)
-                })
-        .catch((err) => {
-                console.log(err); 
-    })
+        } catch (error) {
+        console.log(error);
+        }
     }
 
     return (

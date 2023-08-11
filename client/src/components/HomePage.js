@@ -8,11 +8,10 @@ import { CircularProgress } from '@mui/material';
 
 const HomePage = () => {
 
-    const { user, isAuthenticated } = useAuth0(); 
+    const { user, isAuthenticated, getAccessTokenSilently } = useAuth0(); 
     const [ tripData, setTripData] = useState(); 
     const [ updateData, setUpdateData ] = useState(); 
     
-
     // useEffect (() => {
     //     if (user) {
     //     fetch(`/api/${user.sub}`)
@@ -43,20 +42,27 @@ const HomePage = () => {
     //     }) 
     //     }
     // }, [isAuthenticated])
-
+   
     useEffect (() => {
         if (user) {
-            fetch(`/getTrips/${user.sub}`)
-            .then(res => res.json())
-            .then((data) => {
-                    setTripData(data.data.reverse()); 
-                    console.log(data)
-                    })
-            .catch((err) => {
-                    console.log(err); 
-            }) 
+        fetchTrips()}; 
+    }, [isAuthenticated, updateData]
+    )
+
+    const fetchTrips = async () => {
+        try {
+            const token = await getAccessTokenSilently();
+            const response = await fetch(`/getTrips/${user.sub}`, 
+            { headers : {
+                authorization: `Bearer ${token}`
+            }}
+            )
+            const data = await response.json();
+            setTripData(data.data.reverse()); 
+        } catch (error) {
+            console.log(error);
         }
-    }, [isAuthenticated, updateData])
+    };
 
     return (
     <Background>
@@ -104,7 +110,7 @@ flex-direction: column;
     margin-bottom: 20px; 
     font-size: 2em; 
     background-color: #fcfbe3; 
-    width: 80vw; 
+    width: 85vw; 
     padding: 20px; 
     font-family: var(--font-raleway); 
     font-weight: 800; 

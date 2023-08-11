@@ -8,7 +8,7 @@ export const calcTotal = (array) => {
 
 export const calcPercent = (amount, budget) => {
     const percent = (+amount/+budget)*100
-    return `${percent.toFixed(1)}%`
+    return `${percent.toFixed(1)}`
 }
 
 export const sortTableData = (array, { sortBy, direction }) => {
