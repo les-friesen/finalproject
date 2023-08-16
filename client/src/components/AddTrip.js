@@ -1,6 +1,10 @@
+// Add to form, option of adding up to 10 participants. 
+
+
+
 import { useState } from "react";
 import styled from "styled-components"; 
-import { FiFilePlus, FiFileMinus } from "react-icons/fi"; 
+import { FiFilePlus, FiFileMinus, FiTrash2 } from "react-icons/fi"; 
 import { useAuth0 } from "@auth0/auth0-react";
 import { currency_list } from "../data";
 import { CircularProgress } from "@mui/material";
@@ -8,14 +12,40 @@ import { CircularProgress } from "@mui/material";
 const AddTrip = ( {updateData, setUpdateData} ) => {
 
     const [creatingTrip, setCreatingTrip] = useState(false); 
-    const [formData, setFormData] = useState(); 
+    // const [addMoreParticipants, setAddMoreParticipants] = useState(false); 
+    const [formData, setFormData] = useState({ participants : []}); 
+    const [addParticipant, setAddParticipant] = useState(""); 
     const { user, getAccessTokenSilently } = useAuth0(); 
 
     const handleCreate = () => {
         if (creatingTrip) {
-            setFormData()
+            setFormData({ participants : []})
         }
         setCreatingTrip(!creatingTrip)
+    }
+
+    const deleteParticipant = (index) => {
+        let newArray = [...formData.participants]
+        newArray.splice(index, 1)
+        setFormData({
+            ...formData,
+            participants : newArray
+        })
+    }
+
+    const handleAddParticipant = () => {
+        addParticipant.length > 0 && 
+        setFormData({
+            ...formData,
+            participants: [ ...formData.participants, addParticipant]
+
+        })
+        setAddParticipant(""); 
+    }
+
+    const handleParticipantChange = (e) => {
+        setAddParticipant(e.target.value)
+
     }
 
     const handleChange = (key, value) => {
@@ -82,16 +112,32 @@ const AddTrip = ( {updateData, setUpdateData} ) => {
                                         <option value=''>Select currency</option>
                                             { currency_list.map((item) => {
                                                     return (
-                                                        <option value={item.code}>{item.code} - {item.name}</option>
+                                                        <option key={item.code} value={item.code}>{item.code} - {item.name}</option>
                                                     )
                                                 })
                                             }
                                     </optgroup>
                             </select>
                         </div>
-                        <p className="disclaimer">Once your trip is created, all fields can be edited except base currency </p>
+                        <div className="field">
+                        <button onClick={handleAddParticipant} disabled={formData.participants?.length >= 6 ? true : false} className="addParticipant" type="button">Add participant</button>
+                            <input className="textInput" maxLength={30} placeholder="Enter name" value={addParticipant} type="text" name="participant" onChange={(e) => handleParticipantChange(e)}></input>   
+                        </div>
+                        <div className="participantList">
+                            <p className="participant-title"> Participants ({formData.participants?.length}/6) </p>
+                            { formData.participants?.map((participant, index) => {
+                                return (
+                                    <div className="participant" key={index}>
+                                    <p>{participant}</p>
+                                    <button type="button" onClick={() => deleteParticipant(index)}className="trash"><FiTrash2 size={15}/></button>
+                                    </div>
+                                )
+                            })}
+                        
+                        </div>
+                        <p className="disclaimer">Add up to 6 participants to split expenses. <br/><br/> Note that the participant list and the currency chosen to balance the trip can not be edited after creating the trip</p>
                         <div className="submitButton">
-                            <button>{updateData === "loading" ? <CircularProgress style={{'color': 'white'}} size="1em" /> : <><FiFilePlus/> <span>Create Trip </span></>}</button>
+                            <button type="submit">{updateData === "loading" ? <CircularProgress style={{'color': 'white'}} size="1em" /> : <><FiFilePlus/> <span>Create Trip </span></>}</button>
                         </div>
                 </form>
             </div>
@@ -117,7 +163,7 @@ align-items: center;
     align-items: center; 
     background-color: #fcfbe3;
     opacity: 0.75; 
-    width: 260px;
+    width: 300px;
     border-radius: 5px;  
     font-family: var(--font-carterone)
 }
@@ -127,7 +173,7 @@ input, select, optgroup {
 }
 
 .field {
-    width: 210px;  
+    width: 260px;  
     margin: 0px 10px 10px 10px; 
     display: flex; 
     flex-direction: row; 
@@ -143,13 +189,51 @@ input, select, optgroup {
     width: 115px; 
 }
 
+.participantList {
+
+    .participant-title {
+        font-family: var(--font-carterone);
+        margin-left: 10px; 
+    }
+
+    .participant {
+        font-family: var(--font-poppins); 
+        margin-left: 10px; 
+        margin-top: 5px; 
+        display: flex;
+        flex-direction: row; 
+        align-items: center; 
+        justify-content: space-between; 
+    }
+
+   .trash {
+        margin-right: 30px; 
+        height: 25px; 
+        width: 25px; 
+        border: none; 
+    
+        button : hover {
+            cursor: pointer; 
+        }
+   } 
+}
+
+
+.addParticipant {
+    width: 100px; 
+    height: 26px; 
+    font-size: 0.7em; 
+}
+
 .form-select,  {
     width: 120px;
 }
 
 .disclaimer {
+    padding: 10px;  
+    margin-top: 10px; 
     font-style: italic;
-    color: red; 
+    color: green; 
     margin-bottom: 10px; 
     font-weight: bold; 
 }
@@ -180,6 +264,6 @@ button {
 button:hover {
     cursor: pointer; 
 }
-`; 
+`
 
 export default AddTrip; 

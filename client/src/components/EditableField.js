@@ -79,6 +79,7 @@ const EditableField = ({ field, inputType, initialValue, tripId, setUpdateData, 
             </select>
             : isEditing 
             ? <input
+                className="input"
                 autoFocus
                 type={inputType}
                 value={inputValue}

@@ -118,17 +118,17 @@ table {
         :hover {
             cursor: pointer; 
         }    
-    }
+    } 
+}
 
-    input, select {
-        font-family: var(--font-raleway); 
-        background: transparent;
-        border: none;
-    }
-    
-    input[type="number"] {
-        width: 50px; 
-    }
+input, select {
+    font-family: var(--font-raleway); 
+    background: transparent;
+    border: none;
+}
+
+input[type="number"] {
+    width: 50px; 
 }
 `; 
 

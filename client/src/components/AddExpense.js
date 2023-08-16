@@ -1,3 +1,7 @@
+// Add fields for Paid by: (select with options looping through array) and for. 
+// Simple split vs complex split? (Could always start with simple)
+
+
 import { useState } from "react";
 import styled from "styled-components"; 
 import { FiFilePlus, FiFileMinus } from "react-icons/fi"; 
@@ -5,18 +9,68 @@ import { currency_list } from "../data";
 import {BiCalculator} from "react-icons/bi"; 
 import { CircularProgress } from "@mui/material";
 import { useAuth0 } from "@auth0/auth0-react";
+import { sumArray } from "../helpers";
 
-const AddExpense = ( {updateData, setUpdateData, tripId, baseCurrency} ) => {
+const AddExpense = ( {participants, updateData, setUpdateData, tripId, baseCurrency} ) => {
 
     const [creatingExpense, setCreatingExpense] = useState(false); 
     const [usingCalculator, setUsingCalculator] = useState(false); 
-    const [formData, setFormData] = useState({amount: 0}); 
+    const [formData, setFormData] = useState(() => {
+        const arr = Array(participants.length).fill("1");
+        return { amount: 0, distribution: arr}
+    })
     const [currencyData, setCurrencyData] = useState({rate: 0}); 
     const { getAccessTokenSilently } = useAuth0(); 
+   
+    const [ isChecked, setIsChecked ] = useState(() => {
+        const arr = Array(participants.length).fill(true);
+        return arr; 
+    })
+   
+
+    const handleCheckbox = (index) => {
+        if (formData.distribution[index] === "0") {
+            let newArray = [...formData.distribution]; 
+            newArray[index] = "1";
+            setFormData( {...formData, distribution: newArray})
+
+            let newArray2 = [...isChecked]
+            newArray2[index] = true; 
+            setIsChecked(newArray2)
+        } else {
+            let newArray = [...formData.distribution]; 
+            newArray[index] = "0"; 
+            setFormData( {...formData, distribution: newArray})
+           
+            let newArray2 = [...isChecked]
+            newArray2[index] = false; 
+            setIsChecked(newArray2)
+        }
+    }
+
+    const handleDistribution = (index, value) => {
+
+        if (value === "0") {
+            let newArray2 = [...isChecked]
+            newArray2[index] = false; 
+            setIsChecked(newArray2)
+        }
+
+        let newArray = [...formData.distribution]; 
+        newArray[index] = value;
+        setFormData( {...formData, distribution: newArray})
+    }
 
     const handleCreate = () => {
         if (creatingExpense) {
-            setFormData({amount: 0})
+            setFormData(() => {
+                const arr = Array(participants.length).fill("1");
+                return { amount: 0, distribution: arr}
+            })
+            setIsChecked(() => {
+                const arr = Array(participants.length).fill(true);
+                return arr; 
+            })
             setCurrencyData({rate: 0})
         }
         setCreatingExpense(!creatingExpense)
@@ -143,8 +197,50 @@ const AddExpense = ( {updateData, setUpdateData, tripId, baseCurrency} ) => {
                             <label htmlFor="amount">amount - {baseCurrency}</label>
                             <input required className="numberInput" value={formData.amount} type="number" step=".01" id="amount" onChange={(e) => handleChange(e.target.id, e.target.value)} />
                         </div>
+                        <div className="field">
+                            <label htmlFor="paidBy">paid by</label>
+                            <select required className="form-select" id="paidBy" name="paidBy" onChange={(e) => handleChange(e.target.id, e.target.value)}>
+                                            <option value="">Select participant</option>
+                                            { participants.map((participant, index) => {
+                                                    return (
+                                                        <option key={index} value={participant}>{participant}</option>
+                                                    )
+                                                })
+                                            }
+                            </select>
+                        </div>
+                        <div className="break"></div>
+                        <div className="distribution">
+                            <label htmlFor="distribution">distribution</label>
+                            {
+                                participants.map((participant, index) => {
+                                    return (
+                                        <div className="participant" key={index}>
+                                            <input 
+                                                type="checkbox" 
+                                                name="distribution" 
+                                                value={index} 
+                                                checked={isChecked[index]} 
+                                                onChange={(e) => handleCheckbox(e.target.value)}/> 
+                                            <span>{participant} </span>
+                                            <input 
+                                                type="number" 
+                                                value={formData.distribution[index]} onKeyDown={ (e) => (e.key === '.' || e.key === '-' ) && e.preventDefault()} 
+                                                id={index} 
+                                                step="1" 
+                                                min="0" 
+                                                max="100" 
+                                                onChange={(e) => handleDistribution(e.target.id, e.target.value)}/> 
+                                            <span>{formData.amount && (formData.amount*formData.distribution[index]/sumArray(formData.distribution)).toFixed(2)}</span>
+                                        </div>
+                                    )
+                                })
+                            }
+
+
+                        </div>
                         <div className="submitButton">
-                            <button> {updateData === "loading" ? <CircularProgress style={{'color': 'white'}} size="1em" /> : <><FiFilePlus/> <span>Add Expense</span></>} </button>
+                            <button className="addExpenseButton"> {updateData === "loading" ? <CircularProgress style={{'color': 'white'}} size="1em" /> : <><FiFilePlus/> <span>Add Expense</span></>} </button>
                         </div>
                 </form>
                 <div className="currency">
@@ -158,7 +254,7 @@ const AddExpense = ( {updateData, setUpdateData, tripId, baseCurrency} ) => {
                                         <option value=''>Select currency</option>
                                             { currency_list.map((item) => {
                                                     return (
-                                                        <option value={item.code}>{item.code} - {item.name}</option>
+                                                        <option key={item.code} value={item.code}>{item.code} - {item.name}</option>
                                                     )
                                                 })
                                             }
@@ -183,8 +279,12 @@ const AddExpense = ( {updateData, setUpdateData, tripId, baseCurrency} ) => {
                         <p>If you paid for your expense with a currency other than {baseCurrency}, click below to use the optional currency converter!</p>
                     </div>
                     }
-                    <div className="submitButton">
+                    <div className="conversionDiv">
                         <button onClick={handleUsingCalculator} className="conversiontool"><BiCalculator /> <span>{usingCalculator? "Cancel" : "Currency Converter"}</span></button>
+                    </div>
+                    <div className="break2" />
+                    <div className="emptySpace">
+                        <p>By default, the expense will be divided equally amoung everyone. To </p>
                     </div>
                 </div>
                 
@@ -207,10 +307,10 @@ align-items: center;
     padding: 10px 20px 10px 20px; 
     display: flex; 
     flex-direction: row; 
-    justify-content: space-around; 
+    justify-content: space-between; 
     background-color: #fcfbe3;
     opacity: 0.75; 
-    width: 60vw;
+    width: 550px;
     border-radius: 5px;  
     font-family: var(--font-carterone)
 }
@@ -232,7 +332,7 @@ input, select, optgroup {
 }
 
 .field {
-    width: 240px;  
+    width: 250px;  
     margin: 0px 10px 10px 0px; 
     display: flex; 
     flex-direction: row; 
@@ -240,19 +340,57 @@ input, select, optgroup {
     align-items: center; 
 }
 
+.break {
+    width: 260px;  
+    margin: 20px 10px 10px 0px; 
+    border-bottom: solid black 1px; 
+    height: 10px; 
+}
+
+.break2 {
+    width: 250px;  
+    margin: 0px 10px 10px 0px; 
+    border-bottom: solid black 1px; 
+    height: 10px; 
+}
+
+.distribution {
+    display: flex; 
+    flex-direction: column; 
+
+    .participant {
+        display: flex; 
+        flex-direction: row; 
+        justify-content: space-between; 
+        margin-top: 5px; 
+    }
+
+    span {
+        font-family: var(--font-raleway)
+    }
+
+}
 .numberInput, .textInput {
-    width: 112px; 
+    width: 120px; 
 }
 
 .dateInput {
-    width: 115px; 
+    width: 123px; 
 }
 
 .form-select,  {
-    width: 120px;
+    width: 128px;
 }
 
 .submitButton {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    position: relative;
+    left: 300px; 
+}
+
+.conversionDiv {
     display: flex;
     justify-content: center; 
     align-items: center; 

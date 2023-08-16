@@ -8,7 +8,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 
 const Trip = ( {tripData, setUpdateData} ) => {
 
-    const { tripName, startDate, endDate, currency, expenses, budget, _id } = tripData; 
+    const { tripName, startDate, endDate, currency, expenses, budget, _id, participants } = tripData; 
     const { getAccessTokenSilently } = useAuth0(); 
     const total = calcTotal(expenses);
 
@@ -53,6 +53,18 @@ const Trip = ( {tripData, setUpdateData} ) => {
                     tripId={_id} 
                     setUpdateData={setUpdateData}/>
             </div>
+            {participants?.length > 1 && 
+            <div className="paragraph">
+                    <p> <span>Participants: </span>
+                    {participants?.map((participant, index) => {
+                        return (
+                            <span key={index}>
+                                <span>{participant}</span>
+                                <span>{index + 1 === participants?.length ? <span>. </span> : <span>, </span>}</span>
+                            </span>)
+                    })}
+                    </p>
+            </div>}
             <div className="paragraph"> 
                 <span>Total Budget: </span> 
                 <EditableField 

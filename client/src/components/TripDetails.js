@@ -14,7 +14,7 @@ import ProgressBar from "./ProgressBar";
 const TripDetails = () => {
 
     const { tripId } = useParams(); 
-    const { user, getAccessTokenSilently } = useAuth0();
+    const { getAccessTokenSilently } = useAuth0();
     const [ tripData, setTripData ] = useState(); 
     const [ updateData, setUpdateData] = useState(); 
     const navigate = useNavigate(); 
@@ -61,16 +61,48 @@ return (
         :   <>
                 <div className="body">
                     <div className="title">
-                        <EditableField inputType="text" field="tripName" initialValue={tripData.tripName} tripId={tripData._id} setUpdateData={setUpdateData}/>
+                        <EditableField 
+                            inputType="text" 
+                            field="tripName" 
+                            initialValue={tripData.tripName} 
+                            tripId={tripData._id} 
+                            setUpdateData={setUpdateData}/>
                     </div>
                     <div className="field">
-                        <EditableField inputType="date" field="startDate" initialValue={tripData.startDate} tripId={tripData._id} setUpdateData={setUpdateData}/>
+                        <EditableField 
+                            inputType="date" 
+                            field="startDate" 
+                            initialValue={tripData.startDate} 
+                            tripId={tripData._id} 
+                            setUpdateData={setUpdateData}/>
                         <span> to </span>
-                        <EditableField inputType="date" field="endDate" initialValue={tripData.endDate} tripId={tripData._id} setUpdateData={setUpdateData} />
+                        <EditableField 
+                            inputType="date" 
+                            field="endDate" 
+                            initialValue={tripData.endDate} 
+                            tripId={tripData._id} 
+                            setUpdateData={setUpdateData}/>
                     </div>
+                    {tripData.participants?.length > 1 && 
+                    <div className="paragraph">
+                    <p> <span>Participants: </span>
+                    {tripData.participants?.map((participant, index) => {
+                        return (
+                            <span key={index}>
+                            <span>{participant}</span> 
+                            <span>{index + 1 === tripData.participants?.length ? <span>. </span> : <span>, </span>}</span>
+                            </span>)
+                        })}
+                    </p>
+                    </div>}
                     <div className="field"> 
                         <span>Total Budget: </span> 
-                        <EditableField inputType="number" field="budget" initialValue={tripData.budget} tripId={tripData._id} setUpdateData={setUpdateData} />
+                        <EditableField 
+                            inputType="number" 
+                            field="budget" 
+                            initialValue={tripData.budget} 
+                            tripId={tripData._id} 
+                            setUpdateData={setUpdateData} />
                         <span>  {tripData.currency}</span>
                     </div>
                     <div className="field">
@@ -83,7 +115,8 @@ return (
                     updateData={updateData} 
                     setUpdateData={setUpdateData} 
                     tripId={tripData._id} 
-                    baseCurrency={tripData.currency}/>
+                    baseCurrency={tripData.currency}
+                    participants={tripData.participants ? tripData.participants : []}/>
                 { tripData.expenses.length > 0 && 
                 <SortableTable 
                     direction={direction} 
