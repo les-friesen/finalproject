@@ -71,7 +71,6 @@ const Distribution = ({participants, formData, setFormData, isChecked, setIsChec
 }
 
 const Wrapper = styled.div`
-
     margin-top: 10px; 
     margin-bottom: 20px;  
     width: 250px; 
@@ -88,7 +87,6 @@ const Wrapper = styled.div`
 
     .person span {
         margin-left: 20px; 
-         
     }
 
     .ratioAndAmount {
@@ -107,9 +105,6 @@ const Wrapper = styled.div`
         font-family: var(--font-raleway);
         
     }
-
 `
-
-
 
 export default Distribution 

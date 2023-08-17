@@ -24,45 +24,45 @@ const Header = ( {loginWithPopup, logout, isAuthenticated }) => {
 }
 
 const StyledLink = styled(Link)`
-text-decoration: none; 
-margin-left: calc(7.5vw - 20px); 
+    text-decoration: none; 
+    margin-left: calc(7.5vw - 20px); 
 `
 
 const NavBar = styled.div`
-font-family: var(--font-carterone); 
-font-weight: 400; 
-font-size: 2em; 
-height: 60px; 
-background-color: #17918b; 
-border-bottom: solid #fcfbe3 3px; 
-display: flex;
-flex-direction: row;
-justify-content: space-between; 
-align-items: center; 
-
-.buttons {
-height: 42px; 
-}
-
-p {
-    color: #fcfbe3; 
-}
-
-button {
-    background-color: #fcfbe3; 
-    border: none;
-    border-radius: 10px; 
-    height: 30px; 
-    width: 80px; 
-    margin-right: calc(7.5vw - 20px); 
     font-family: var(--font-carterone); 
-    margin-top: 0; 
-    
-}
+    font-weight: 400; 
+    font-size: 2em; 
+    height: 60px; 
+    background-color: #17918b; 
+    border-bottom: solid #fcfbe3 3px; 
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; 
+    align-items: center; 
 
-button:hover {
-    cursor: pointer; 
-}
+    .buttons {
+    height: 42px; 
+    }
+
+    p {
+        color: #fcfbe3; 
+    }
+
+    button {
+        background-color: #fcfbe3; 
+        border: none;
+        border-radius: 10px; 
+        height: 30px; 
+        width: 80px; 
+        margin-right: calc(7.5vw - 20px); 
+        font-family: var(--font-carterone); 
+        margin-top: 0; 
+        
+    }
+
+    button:hover {
+        cursor: pointer; 
+    }
 `; 
 
 export default Header; 

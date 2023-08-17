@@ -16,22 +16,22 @@ const EditableField = ({ field, inputType, initialValue, tripId, setUpdateData, 
     }
 
     const patchTrip = async () => {
-    try {
-        const token = await getAccessTokenSilently();
-        const response = await fetch(`/editTrip/${tripId}`, {
-            method: "PATCH",
-            headers : {
-                "Accept": "application/json",
-                "Content-Type": "application/json",
-                "authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify({ [field] : inputValue})
-            })
-        const data = await response.json();
-        setUpdateData({data, field});
-    } catch (error) {
-        console.log(error);
-    }
+        try {
+            const token = await getAccessTokenSilently();
+            const response = await fetch(`/editTrip/${tripId}`, {
+                method: "PATCH",
+                headers : {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                    "authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({ [field] : inputValue})
+                })
+            const data = await response.json();
+            setUpdateData({data, field});
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     const patchExpense = async () => {

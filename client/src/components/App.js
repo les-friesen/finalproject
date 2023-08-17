@@ -10,7 +10,6 @@ const App = () => {
   const { loginWithPopup, logout, user, isAuthenticated } = useAuth0(); 
 
   return (
-
     <BrowserRouter>
       <GlobalStyle />
       <div>

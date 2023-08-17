@@ -309,154 +309,154 @@ const AddExpense = ( {participants, updateData, setUpdateData, tripId, baseCurre
 }
 
 const Wrapper = styled.div`
-margin-top: 10px; 
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center; 
-
-.form {
     margin-top: 10px; 
-    margin-bottom: 10px;  
-    padding: 10px 20px 10px 20px; 
-    display: flex; 
-    flex-direction: row; 
-    justify-content: space-between; 
-    background-color: #fcfbe3;
-    opacity: 0.75; 
-    width: 550px;
-    border-radius: 5px;  
-    font-family: var(--font-carterone)
-}
-
-.currency {
-    padding: 10px 20px 10px 20px 
-    display: flex; 
-    flex-direction: column; 
-}
-
-.currencyTitle {
-    font-family: var(--font-raleway);
-    text-align: center; 
-    margin-bottom: 20px; 
-}
-
-input, select, optgroup {
-    font-family: var(--font-raleway)
-}
-
-.field {
-    width: 250px;  
-    margin: 0px 10px 10px 0px; 
-    display: flex; 
-    flex-direction: row; 
-    justify-content: space-between; 
-    align-items: center; 
-}
-
-.break {
-    width: 260px;  
-    margin: 20px 10px 10px 0px; 
-    border-bottom: solid black 1px; 
-    height: 10px; 
-}
-
-.break2 {
-    width: 250px;  
-    margin: 0px 10px 10px 0px; 
-    border-bottom: solid black 1px; 
-    height: 10px; 
-}
-
-.distribution {
-    padding-top: 10px; 
-    .distributionLabel {
-        margin-top: 20px; 
-    }
-}
-
-.numberInput, .textInput {
-    width: 120px; 
-}
-
-.dateInput {
-    width: 123px; 
-}
-
-.form-select,  {
-    width: 128px;
-}
-
-.submitButton {
     display: flex;
-    justify-content: center; 
-    align-items: center; 
-    position: relative;
-    
-}
-
-.conversionDiv {
-    display: flex;
-    justify-content: center; 
-    align-items: center; 
-}
-
-button, .conversiontool {
-    background-color: #17918b; 
-    border: none;
-    border-radius: 10px; 
-    height: 40px; 
-    width: 200px; 
-    color: #fcfbe3; 
-    font-family: var(--font-poppins);
-    font-size: 1em;  
-    display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center; 
-    span {
-        margin-left: 5px; 
-    }
-}
 
-.emptySpace {
-    height: 124px; 
-    width: 250px; 
-    display: flex;
-    justify-content: center; 
-    align-items: center; 
-    flex-direction: column; 
-    p {
+    .form {
+        margin-top: 10px; 
+        margin-bottom: 10px;  
+        padding: 10px 20px 10px 20px; 
+        display: flex; 
+        flex-direction: row; 
+        justify-content: space-between; 
+        background-color: #fcfbe3;
+        opacity: 0.75; 
+        width: 550px;
+        border-radius: 5px;  
+        font-family: var(--font-carterone)
+    }
+
+    .currency {
+        padding: 10px 20px 10px 20px 
+        display: flex; 
+        flex-direction: column; 
+    }
+
+    .currencyTitle {
         font-family: var(--font-raleway);
-        margin-bottom: 5px; 
         text-align: center; 
+        margin-bottom: 20px; 
     }
-}
 
-.emptySpace2 {
-    margin-top: 20px; 
-    width: 250px; 
-    display: flex;
-    justify-content: center; 
-    align-items: center; 
-    flex-grow: 1; 
-    flex-direction: column; 
-    p {
-        font-family: var(--font-raleway);
-        margin-bottom: 5px; 
-        text-align: center; 
+    input, select, optgroup {
+        font-family: var(--font-raleway)
     }
-}
 
-.converter {
-    background-color: white;
-    width: 180px; 
-    color: black; 
-    align-self: flex-end; 
-}
+    .field {
+        width: 250px;  
+        margin: 0px 10px 10px 0px; 
+        display: flex; 
+        flex-direction: row; 
+        justify-content: space-between; 
+        align-items: center; 
+    }
 
-button:hover {
-    cursor: pointer; 
-}
+    .break {
+        width: 260px;  
+        margin: 20px 10px 10px 0px; 
+        border-bottom: solid black 1px; 
+        height: 10px; 
+    }
+
+    .break2 {
+        width: 250px;  
+        margin: 0px 10px 10px 0px; 
+        border-bottom: solid black 1px; 
+        height: 10px; 
+    }
+
+    .distribution {
+        padding-top: 10px; 
+        .distributionLabel {
+            margin-top: 20px; 
+        }
+    }
+
+    .numberInput, .textInput {
+        width: 120px; 
+    }
+
+    .dateInput {
+        width: 123px; 
+    }
+
+    .form-select,  {
+        width: 128px;
+    }
+
+    .submitButton {
+        display: flex;
+        justify-content: center; 
+        align-items: center; 
+        position: relative;
+        
+    }
+
+    .conversionDiv {
+        display: flex;
+        justify-content: center; 
+        align-items: center; 
+    }
+
+    button, .conversiontool {
+        background-color: #17918b; 
+        border: none;
+        border-radius: 10px; 
+        height: 40px; 
+        width: 200px; 
+        color: #fcfbe3; 
+        font-family: var(--font-poppins);
+        font-size: 1em;  
+        display: flex;
+        justify-content: center;
+        align-items: center; 
+        span {
+            margin-left: 5px; 
+        }
+    }
+
+    .emptySpace {
+        height: 124px; 
+        width: 250px; 
+        display: flex;
+        justify-content: center; 
+        align-items: center; 
+        flex-direction: column; 
+        p {
+            font-family: var(--font-raleway);
+            margin-bottom: 5px; 
+            text-align: center; 
+        }
+    }
+
+    .emptySpace2 {
+        margin-top: 20px; 
+        width: 250px; 
+        display: flex;
+        justify-content: center; 
+        align-items: center; 
+        flex-grow: 1; 
+        flex-direction: column; 
+        p {
+            font-family: var(--font-raleway);
+            margin-bottom: 5px; 
+            text-align: center; 
+        }
+    }
+
+    .converter {
+        background-color: white;
+        width: 180px; 
+        color: black; 
+        align-self: flex-end; 
+    }
+
+    button:hover {
+        cursor: pointer; 
+    }
 `; 
 
 export default AddExpense; 

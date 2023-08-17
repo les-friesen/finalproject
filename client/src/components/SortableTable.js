@@ -19,7 +19,8 @@ return (
                     <thead>
                     <tr>
                         <th>name</th>
-                        <th><button 
+                        <th>
+                            <button 
                                 className="sort"
                                 id="category"
                                 onClick={handleClick}>
@@ -28,7 +29,8 @@ return (
                             </button>
                         </th>
                         { participants?.length > 1 && 
-                        <th><button 
+                        <th>
+                            <button 
                                 className="sort"
                                 id="paidBy"
                                 onClick={handleClick}>
@@ -37,7 +39,8 @@ return (
                             </button>
                         </th>
                         }
-                        <th><button 
+                        <th>
+                            <button 
                                 className="sort"
                                 id="date"
                                 onClick={handleClick}>
@@ -45,7 +48,8 @@ return (
                                 <BiSortAlt2 size={20} style={{pointerEvents: 'none', marginLeft: '5px'}}/>
                             </button>
                         </th>
-                        <th> <button 
+                        <th> 
+                            <button 
                                 className="sort"
                                 id="amount"
                                 onClick={handleClick}>
@@ -57,95 +61,94 @@ return (
                     </tr>
                     </thead>
                     <tbody>
-                    {
-                        sortedItems.map((expense) => {
-                            return (
-                                <Expense 
-                                    key={expense.expenseId} 
-                                    participants={participants} 
-                                    expenseDetails={expense} 
-                                    updateData={updateData} 
-                                    setUpdateData={setUpdateData} 
-                                    tripId={tripId}/>
-                            )
-                        })
-                    }
+                        {   sortedItems.map((expense) => {
+                                return (
+                                    <Expense 
+                                        key={expense.expenseId} 
+                                        participants={participants} 
+                                        expenseDetails={expense} 
+                                        updateData={updateData} 
+                                        setUpdateData={setUpdateData} 
+                                        tripId={tripId}/>
+                                )
+                            })
+                        }
                     </tbody>
             </table>
-            </Wrapper>
+        </Wrapper>
 )
 }
 
 const Wrapper = styled.div`
-table {
-    margin-top: 10px; 
-    margin-bottom: 30px; 
-    width: calc(85vw + 40px); 
-    font-family: var(--font-raleway);
+    table {
+        margin-top: 10px; 
+        margin-bottom: 30px; 
+        width: calc(85vw + 40px); 
+        font-family: var(--font-raleway);
 
-    tr {
-        height: 40px; 
-        background-color: white;  
-        color: black; 
-        border: solid grey 2px;  
-        border-radius: 10px;     
-    }
-
-    td, th {
-        padding-left: 5px; 
-        padding-right: 0px; 
-        display: table-cell; 
-        vertical-align: middle; 
-    }
-
-    th, .sort {
-        text-align: left;
-        font-family: var(--font-carterone); 
-        color: #fcfbe3;
-        font-weight: 900; 
-        font-size: 1em; 
-        background-color: #17918b; 
-        
-
-        :hover {
-            cursor: pointer; 
+        tr {
+            height: 40px; 
+            background-color: white;  
+            color: black; 
+            border: solid grey 2px;  
+            border-radius: 10px;     
         }
+
+        td, th {
+            padding-left: 5px; 
+            padding-right: 0px; 
+            display: table-cell; 
+            vertical-align: middle; 
+        }
+
+        th, .sort {
+            text-align: left;
+            font-family: var(--font-carterone); 
+            color: #fcfbe3;
+            font-weight: 900; 
+            font-size: 1em; 
+            background-color: #17918b; 
+            
+
+            :hover {
+                cursor: pointer; 
+            }
+        }
+
+        button {
+            background: transparent; 
+            border: none; 
+
+            :hover {
+                cursor: pointer; 
+            }    
+        }
+
+        .sort {
+            display: flex; 
+            flex-direction: row; 
+            justify-content: center; 
+            align-items: center; 
+            padding-left: 0px; 
+
+        .delete {
+            background: transparent; 
+            border: none; 
+            :hover {
+                cursor: pointer; 
+            }    
+        } 
     }
 
-    button {
-        background: transparent; 
-        border: none; 
-
-        :hover {
-            cursor: pointer; 
-        }    
+    input, select {
+        font-family: var(--font-raleway); 
+        background: transparent;
+        border: none;
     }
 
-    .sort {
-        display: flex; 
-        flex-direction: row; 
-        justify-content: center; 
-        align-items: center; 
-        padding-left: 0px; 
-
-    .delete {
-        background: transparent; 
-        border: none; 
-        :hover {
-            cursor: pointer; 
-        }    
-    } 
-}
-
-input, select {
-    font-family: var(--font-raleway); 
-    background: transparent;
-    border: none;
-}
-
-input[type="number"] {
-    width: 50px; 
-}
+    input[type="number"] {
+        width: 50px; 
+    }
 `; 
 
 export default SortableTable 

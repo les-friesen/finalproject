@@ -2,15 +2,15 @@ import styled from 'styled-components'
 
 const ProgressBar = ( { completed } ) => {
 
-return (
-    <Container>
-        <Filler style={{ width : completed > 100 ? "100%" : `${completed}%`, 
-                        backgroundColor : completed < 70 ? "green" : completed > 95 ? "red" : "orange" 
-                        }}>
-            <Label>{completed > 6 ? `${completed}%` : ""}</Label>
-        </Filler>
-    </Container>
-)
+    return (
+        <Container>
+            <Filler style={{ width : completed > 100 ? "100%" : `${completed}%`, 
+                            backgroundColor : completed < 70 ? "green" : completed > 95 ? "red" : "orange" 
+                            }}>
+                <Label>{completed > 6 ? `${completed}%` : ""}</Label>
+            </Filler>
+        </Container>
+    )
 }
 
 const Container = styled.div`

@@ -93,99 +93,99 @@ const Trip = ( {tripData, setUpdateData} ) => {
 }
 
 const StyledLink = styled(Link)`
-text-decoration: none; 
+    text-decoration: none; 
 `
 
 const Wrapper = styled.div`
-margin: 20px; 
-padding: 20px 20px 10px 20px; 
-display: flex; 
-flex-direction: column; 
-background-color: #fcfbe3;
-opacity: 0.75; 
-width: 85vw;
-border-radius: 5px;  
-
-.paragraph, p {
-    margin-top: 5px; 
-    margin-bottom: 5px; 
-}
-
-input {
-    font-family: var(--font-raleway); 
-    background: transparent;
-    border: none;
-}
-
-input[type="number"] {
-    width: 50px; 
-}
-
-.title input {
-    font-size: 0.9em;  
-}
-
-.number {
-    width: 40px; 
-}
-
-.title {
-    font-size: 2em; 
-}
-
-.lastRow {
+    margin: 20px; 
+    padding: 20px 20px 10px 20px; 
     display: flex; 
-    flex-direction: row; 
-    justify-content: space-between; 
-}
+    flex-direction: column; 
+    background-color: #fcfbe3;
+    opacity: 0.75; 
+    width: 85vw;
+    border-radius: 5px;  
 
-.empty {
-    width: 40px; 
-}
-
-.buttonWrapper {
-    display: flex;
-    justify-content: flex-end; 
-
-    button {
-        background-color: #fcfbe3;
-        width: 40px; 
-        border: none; 
+    .paragraph, p {
+        margin-top: 5px; 
+        margin-bottom: 5px; 
     }
 
-    button : hover {
-        cursor: pointer; 
-    }
-}
-
-.expenseButton {
-    margin-bottom: 0px; 
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-
-    button {
-        text-decoration: none; 
-        background-color: #17918b; 
+    input {
+        font-family: var(--font-raleway); 
+        background: transparent;
         border: none;
-        border-radius: 10px; 
-        height: 40px; 
-        width: 200px; 
-        color: #fcfbe3; 
-        font-family: var(--font-poppins);
-        font-size: 1em; 
+    }
+
+    input[type="number"] {
+        width: 50px; 
+    }
+
+    .title input {
+        font-size: 0.9em;  
+    }
+
+    .number {
+        width: 40px; 
+    }
+
+    .title {
+        font-size: 2em; 
+    }
+
+    .lastRow {
+        display: flex; 
+        flex-direction: row; 
+        justify-content: space-between; 
+    }
+
+    .empty {
+        width: 40px; 
+    }
+
+    .buttonWrapper {
         display: flex;
+        justify-content: flex-end; 
+
+        button {
+            background-color: #fcfbe3;
+            width: 40px; 
+            border: none; 
+        }
+
+        button : hover {
+            cursor: pointer; 
+        }
+    }
+
+    .expenseButton {
+        margin-bottom: 0px; 
+        display: flex;
+        flex-direction: row;
         justify-content: center;
-        align-items: center;  
-        span {
-            margin-left: 5px; 
-        }  
+
+        button {
+            text-decoration: none; 
+            background-color: #17918b; 
+            border: none;
+            border-radius: 10px; 
+            height: 40px; 
+            width: 200px; 
+            color: #fcfbe3; 
+            font-family: var(--font-poppins);
+            font-size: 1em; 
+            display: flex;
+            justify-content: center;
+            align-items: center;  
+            span {
+                margin-left: 5px; 
+            }  
+        }
+        
+        button:hover {
+            cursor: pointer; 
+        }
     }
-    
-    button:hover {
-        cursor: pointer; 
-    }
-}
 `; 
 
 export default Trip; 

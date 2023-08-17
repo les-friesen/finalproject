@@ -164,13 +164,12 @@ const Expense = ( {expenseDetails, updateData, setUpdateData, tripId, participan
 }
 
 const Div = styled.div`
+    display: flex;
+    flex-direction: row; 
+    align-items: flex-end; 
+    justify-content: space-around;
 
-display: flex;
-flex-direction: row; 
-align-items: flex-end; 
-justify-content: space-around;
-
-.update {
+    .update {
         background-color: #17918b; 
         border: none;
         border-radius: 10px; 
@@ -188,19 +187,18 @@ justify-content: space-around;
         }
     }
 
-button:hover {
-    cursor: pointer; 
-}
+    button:hover {
+        cursor: pointer; 
+    }
 
-button:disabled {
-    pointer-events: none;
-    opacity: 0.5;
-}
+    button:disabled {
+        pointer-events: none;
+        opacity: 0.5;
+    }
 
-.empty {
-    width: 250px;  
-}
-
+    .empty {
+        width: 250px;  
+    }
 `; 
 
 export default Expense;
