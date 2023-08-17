@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useAuth0 } from "@auth0/auth0-react";
 
-const EditableField = ({ field, inputType, initialValue, tripId, setUpdateData, expenseId }) => {
+const EditableField = ({ field, inputType, initialValue, tripId, setUpdateData, expenseId, formData, setFormData }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [inputValue, setInputValue] = useState(initialValue);
     const { getAccessTokenSilently } = useAuth0(); 
@@ -48,6 +48,10 @@ const EditableField = ({ field, inputType, initialValue, tripId, setUpdateData, 
                 })
             const data = await response.json();
                 setUpdateData(data);
+                if (formData) {
+                    setFormData({...formData, amount: inputValue})
+                }
+                
         } catch (error) {
             console.log(error.message);
         }
@@ -61,6 +65,7 @@ const EditableField = ({ field, inputType, initialValue, tripId, setUpdateData, 
         if (inputValue !== initialValue && expenseId) {
             patchExpense();
         }
+        
     } 
     
     return (
@@ -73,8 +78,8 @@ const EditableField = ({ field, inputType, initialValue, tripId, setUpdateData, 
                 <option value="Transportation">Transportation</option>
                 <option value="Accommodations">Accommodations</option>
                 <option value="Health/Hygiene">Health/Hygiene</option>
-                <option value="Entertainment/Sightseeing">Entertainment/Sightseeing</option>
-                <option value="Souvenirs/Gifts">Souvenirs/Gifts</option>
+                <option value="Entertainment">Entertainment</option>
+                <option value="Shopping">Shopping</option>
                 <option value="Other">Other</option>
             </select>
             : isEditing 

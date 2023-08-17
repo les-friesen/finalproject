@@ -119,6 +119,7 @@ return (
                     participants={tripData.participants ? tripData.participants : []}/>
                 { tripData.expenses.length > 0 && 
                 <SortableTable 
+                    participants={tripData.participants}
                     direction={direction} 
                     setDirection={setDirection} 
                     setSortBy={setSortBy} 

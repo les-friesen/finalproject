@@ -1,7 +1,3 @@
-// Add fields for Paid by: (select with options looping through array) and for. 
-// Simple split vs complex split? (Could always start with simple)
-
-
 import { useState } from "react";
 import styled from "styled-components"; 
 import { FiFilePlus, FiFileMinus } from "react-icons/fi"; 
@@ -9,7 +5,7 @@ import { currency_list } from "../data";
 import {BiCalculator} from "react-icons/bi"; 
 import { CircularProgress } from "@mui/material";
 import { useAuth0 } from "@auth0/auth0-react";
-import { sumArray } from "../helpers";
+import Distribution from "./Distribution";
 
 const AddExpense = ( {participants, updateData, setUpdateData, tripId, baseCurrency} ) => {
 
@@ -21,45 +17,10 @@ const AddExpense = ( {participants, updateData, setUpdateData, tripId, baseCurre
     })
     const [currencyData, setCurrencyData] = useState({rate: 0}); 
     const { getAccessTokenSilently } = useAuth0(); 
-   
     const [ isChecked, setIsChecked ] = useState(() => {
         const arr = Array(participants.length).fill(true);
         return arr; 
     })
-   
-
-    const handleCheckbox = (index) => {
-        if (formData.distribution[index] === "0") {
-            let newArray = [...formData.distribution]; 
-            newArray[index] = "1";
-            setFormData( {...formData, distribution: newArray})
-
-            let newArray2 = [...isChecked]
-            newArray2[index] = true; 
-            setIsChecked(newArray2)
-        } else {
-            let newArray = [...formData.distribution]; 
-            newArray[index] = "0"; 
-            setFormData( {...formData, distribution: newArray})
-           
-            let newArray2 = [...isChecked]
-            newArray2[index] = false; 
-            setIsChecked(newArray2)
-        }
-    }
-
-    const handleDistribution = (index, value) => {
-
-        if (value === "0") {
-            let newArray2 = [...isChecked]
-            newArray2[index] = false; 
-            setIsChecked(newArray2)
-        }
-
-        let newArray = [...formData.distribution]; 
-        newArray[index] = value;
-        setFormData( {...formData, distribution: newArray})
-    }
 
     const handleCreate = () => {
         if (creatingExpense) {
@@ -151,7 +112,10 @@ const AddExpense = ( {participants, updateData, setUpdateData, tripId, baseCurre
                 })
             const data = await response.json();
                 setUpdateData(data);
-                setFormData({amount: 0});
+                setFormData(() => {
+                    const arr = Array(participants.length).fill("1");
+                    return { amount: 0, distribution: arr}
+                });
                 setCreatingExpense(false); 
                 setCurrencyData({rate: 0}) 
         } catch (error) {
@@ -167,80 +131,100 @@ const AddExpense = ( {participants, updateData, setUpdateData, tripId, baseCurre
 
     return (
         <Wrapper> 
-            <button onClick={handleCreate}>{creatingExpense ? <FiFileMinus /> : <FiFilePlus /> } <span>{creatingExpense ? "Cancel" : "Add Expense" }</span></button>
+            <button onClick={handleCreate}>
+                {creatingExpense ? <FiFileMinus /> : <FiFilePlus /> } 
+                <span> {creatingExpense ? "Cancel" : "Add Expense" }</span>
+            </button>
             { creatingExpense &&
             <div className="form">
                 <form onSubmit={handleSubmit}>
                         <div className="field">
                             <label htmlFor="tripName">name </label>
-                            <input required placeholder='e.g. "Pizza lunch"'className="textInput" maxLength="40" type="text" id="name" onChange={(e) => handleChange(e.target.id, e.target.value)} />
+                            <input 
+                                required 
+                                placeholder='e.g. "Pizza lunch"'
+                                className="textInput" 
+                                maxLength="40" 
+                                type="text" 
+                                id="name" 
+                                onChange={(e) => handleChange(e.target.id, e.target.value)} />
                         </div>
                         <div className="field">
                             <label htmlFor="type">category</label>
-                            <select required className="form-select" id="category" name="category" onChange={(e) => handleChange(e.target.id, e.target.value)}>
+                            <select 
+                                required 
+                                className="form-select" 
+                                id="category" 
+                                name="category" 
+                                onChange={(e) => handleChange(e.target.id, e.target.value)}>
                                     <option value=''>Select category</option>
                                     <option value="Groceries">Groceries</option>
                                     <option value="Restaurants/Bars">Restaurants/Bars</option>
                                     <option value="Transportation">Transportation</option>
                                     <option value="Accommodations">Accommodations</option>
                                     <option value="Health/Hygiene">Health/Hygiene</option>
-                                    <option value="Entertainment/Sightseeing">Entertainment/Sightseeing</option>
-                                    <option value="Souvenirs/Gifts">Souvenirs/Gifts</option>
+                                    <option value="Entertainment">Entertainment</option>
+                                    <option value="Shopping">Shopping</option>
                                     <option value="Other">Other</option>
                             </select>
                         </div>
                         <div className="field">
                             <label htmlFor="startDate">date </label>
-                            <input required className="dateInput" type="date" id="date" onChange={(e) => handleChange(e.target.id, e.target.value)} />
+                            <input 
+                                required 
+                                className="dateInput" 
+                                type="date" 
+                                id="date" 
+                                onChange={(e) => handleChange(e.target.id, e.target.value)} />
                         </div>
                         <div className="field">
                             <label htmlFor="amount">amount - {baseCurrency}</label>
-                            <input required className="numberInput" value={formData.amount} type="number" step=".01" id="amount" onChange={(e) => handleChange(e.target.id, e.target.value)} />
+                            <input 
+                                required 
+                                className="numberInput" 
+                                value={formData.amount} 
+                                type="number" 
+                                step=".01" 
+                                id="amount" 
+                                onChange={(e) => handleChange(e.target.id, e.target.value)} />
                         </div>
+                        { participants.length > 1 &&
+                        <>
                         <div className="field">
                             <label htmlFor="paidBy">paid by</label>
-                            <select required className="form-select" id="paidBy" name="paidBy" onChange={(e) => handleChange(e.target.id, e.target.value)}>
-                                            <option value="">Select participant</option>
-                                            { participants.map((participant, index) => {
-                                                    return (
-                                                        <option key={index} value={participant}>{participant}</option>
-                                                    )
-                                                })
-                                            }
+                            <select 
+                                required 
+                                className="form-select" 
+                                id="paidBy" 
+                                name="paidBy" 
+                                onChange={(e) => handleChange(e.target.id, e.target.value)}>
+                                    <option value="">Select participant</option>
+                                        { participants.map((participant, index) => {
+                                            return (
+                                                <option key={index} value={participant}>{participant}</option>
+                                            )
+                                        })
+                                        }
                             </select>
                         </div>
                         <div className="break"></div>
                         <div className="distribution">
-                            <label htmlFor="distribution">distribution</label>
-                            {
-                                participants.map((participant, index) => {
-                                    return (
-                                        <div className="participant" key={index}>
-                                            <input 
-                                                type="checkbox" 
-                                                name="distribution" 
-                                                value={index} 
-                                                checked={isChecked[index]} 
-                                                onChange={(e) => handleCheckbox(e.target.value)}/> 
-                                            <span>{participant} </span>
-                                            <input 
-                                                type="number" 
-                                                value={formData.distribution[index]} onKeyDown={ (e) => (e.key === '.' || e.key === '-' ) && e.preventDefault()} 
-                                                id={index} 
-                                                step="1" 
-                                                min="0" 
-                                                max="100" 
-                                                onChange={(e) => handleDistribution(e.target.id, e.target.value)}/> 
-                                            <span>{formData.amount && (formData.amount*formData.distribution[index]/sumArray(formData.distribution)).toFixed(2)}</span>
-                                        </div>
-                                    )
-                                })
-                            }
-
-
+                            <label className="distributionLabel" htmlFor="distribution">distribution ratio</label>
+                            <Distribution 
+                                formData={formData} 
+                                setFormData={setFormData} 
+                                participants={participants} 
+                                isChecked={isChecked} 
+                                setIsChecked={setIsChecked}/>
                         </div>
-                        <div className="submitButton">
-                            <button className="addExpenseButton"> {updateData === "loading" ? <CircularProgress style={{'color': 'white'}} size="1em" /> : <><FiFilePlus/> <span>Add Expense</span></>} </button>
+                        </>
+                        }
+                        <div className="submitButton" style={{left: participants.length > 1 ? '145px' : '0px'}}>
+                            <button className="addExpenseButton"> 
+                                {updateData === "loading" 
+                                    ? <CircularProgress style={{'color': 'white'}} size="1em" /> 
+                                    : <><FiFilePlus/> <span>Add Expense</span></>} 
+                            </button>
                         </div>
                 </form>
                 <div className="currency">
@@ -249,7 +233,11 @@ const AddExpense = ( {participants, updateData, setUpdateData, tripId, baseCurre
                     <div>
                     <div className="field">
                             <label htmlFor="currency">currency </label>
-                            <select className="form-select" id="currency" name="currency" onChange={(e) => handleCurrencyChange(e.target.id, e.target.value)}>
+                            <select 
+                                className="form-select" 
+                                id="currency" 
+                                name="currency" 
+                                onChange={(e) => handleCurrencyChange(e.target.id, e.target.value)}>
                                     <optgroup>
                                         <option value=''>Select currency</option>
                                             { currency_list.map((item) => {
@@ -263,15 +251,32 @@ const AddExpense = ( {participants, updateData, setUpdateData, tripId, baseCurre
                     </div>
                     <div className="field">
                             <label htmlFor="currencyDate">exchange date </label>
-                            <input required className="dateInput" max={new Date().toJSON().slice(0, 10)} type="date" id="currencyDate" onChange={(e) => handleCurrencyChange(e.target.id, e.target.value)} />
+                            <input 
+                                required 
+                                className="dateInput" 
+                                max={new Date().toJSON().slice(0, 10)} 
+                                type="date" id="currencyDate" 
+                                onChange={(e) => handleCurrencyChange(e.target.id, e.target.value)}/>
                     </div>
                     <div className="field">
                             <label htmlFor="rate">rate </label>
-                            <input className="numberInput" value={currencyData.rate} type="number" step=".000001" id="rate" onChange={(e) => handleCurrencyChange(e.target.id, e.target.value)} />
+                            <input 
+                                className="numberInput" 
+                                value={currencyData.rate} 
+                                type="number" 
+                                step=".000001" 
+                                id="rate" 
+                                onChange={(e) => handleCurrencyChange(e.target.id, e.target.value)}/>
                     </div>
                     <div className="field">
                             <label htmlFor="amount">amount {currencyData.currency ? ` - ${currencyData.currency}` : ""}</label>
-                            <input required className="numberInput" type="number" step=".01" id="amount" onChange={(e) => handleCurrencyChange(e.target.id, e.target.value)} />
+                            <input 
+                                required 
+                                className="numberInput" 
+                                type="number" 
+                                step=".01" 
+                                id="amount" 
+                                onChange={(e) => handleCurrencyChange(e.target.id, e.target.value)}/>
                     </div>
                     </div> 
                     :
@@ -280,14 +285,23 @@ const AddExpense = ( {participants, updateData, setUpdateData, tripId, baseCurre
                     </div>
                     }
                     <div className="conversionDiv">
-                        <button onClick={handleUsingCalculator} className="conversiontool"><BiCalculator /> <span>{usingCalculator? "Cancel" : "Currency Converter"}</span></button>
+                        <button 
+                            onClick={handleUsingCalculator} 
+                            className="conversiontool">
+                                <BiCalculator /> 
+                                <span>{usingCalculator? "Cancel" : "Currency Converter"}</span>
+                        </button>
                     </div>
-                    <div className="break2" />
-                    <div className="emptySpace">
-                        <p>By default, the expense will be divided equally amoung everyone. To </p>
-                    </div>
+                    { participants.length > 1 &&
+                        <>
+                            <div className="break2" />
+                            <div className="emptySpace2">
+                                <p>By default, the expense will be divided equally among all participants.
+                                Remove participants or customize ratio as needed!</p>
+                            </div>
+                        </>
+                    }
                 </div>
-                
             </div>
             }
         </Wrapper>
@@ -355,21 +369,12 @@ input, select, optgroup {
 }
 
 .distribution {
-    display: flex; 
-    flex-direction: column; 
-
-    .participant {
-        display: flex; 
-        flex-direction: row; 
-        justify-content: space-between; 
-        margin-top: 5px; 
+    padding-top: 10px; 
+    .distributionLabel {
+        margin-top: 20px; 
     }
-
-    span {
-        font-family: var(--font-raleway)
-    }
-
 }
+
 .numberInput, .textInput {
     width: 120px; 
 }
@@ -387,7 +392,7 @@ input, select, optgroup {
     justify-content: center; 
     align-items: center; 
     position: relative;
-    left: 300px; 
+    
 }
 
 .conversionDiv {
@@ -427,6 +432,21 @@ button, .conversiontool {
     }
 }
 
+.emptySpace2 {
+    margin-top: 20px; 
+    width: 250px; 
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    flex-grow: 1; 
+    flex-direction: column; 
+    p {
+        font-family: var(--font-raleway);
+        margin-bottom: 5px; 
+        text-align: center; 
+    }
+}
+
 .converter {
     background-color: white;
     width: 180px; 
@@ -437,7 +457,6 @@ button, .conversiontool {
 button:hover {
     cursor: pointer; 
 }
-
 `; 
 
 export default AddExpense; 

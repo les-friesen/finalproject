@@ -3,7 +3,7 @@ import { sortTableData } from '../helpers';
 import Expense from './Expense';
 import {BiSortAlt2} from "react-icons/bi"
 
-const SortableTable = ({direction, setDirection, setSortBy, sortedItems, setSortedItems, currency, expenses, tripId, updateData, setUpdateData}) => {
+const SortableTable = ({participants, direction, setDirection, setSortBy, sortedItems, setSortedItems, currency, expenses, tripId, updateData, setUpdateData}) => {
 
     const handleClick = event => {
         const sortDir = direction === 'descending' ? 'ascending' : 'descending'
@@ -27,6 +27,16 @@ return (
                                 <BiSortAlt2 size={20} style={{pointerEvents: 'none', marginLeft: '5px'}}/>
                             </button>
                         </th>
+                        { participants?.length > 1 && 
+                        <th><button 
+                                className="sort"
+                                id="paidBy"
+                                onClick={handleClick}>
+                                paid by 
+                                <BiSortAlt2 size={20} style={{pointerEvents: 'none', marginLeft: '5px'}}/>
+                            </button>
+                        </th>
+                        }
                         <th><button 
                                 className="sort"
                                 id="date"
@@ -39,18 +49,24 @@ return (
                                 className="sort"
                                 id="amount"
                                 onClick={handleClick}>
-                                amount - {currency}
+                                tot. {currency}
                                 <BiSortAlt2 size={20} style={{pointerEvents: 'none', marginLeft: '5px'}}/>
                             </button>
                         </th>
-                        <th>delete</th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
                     {
                         sortedItems.map((expense) => {
                             return (
-                                <Expense key={expense.expenseId} expenseDetails={expense} updateData={updateData} setUpdateData={setUpdateData} tripId={tripId}/>
+                                <Expense 
+                                    key={expense.expenseId} 
+                                    participants={participants} 
+                                    expenseDetails={expense} 
+                                    updateData={updateData} 
+                                    setUpdateData={setUpdateData} 
+                                    tripId={tripId}/>
                             )
                         })
                     }
@@ -77,7 +93,7 @@ table {
 
     td, th {
         padding-left: 5px; 
-        padding-right: 5px; 
+        padding-right: 0px; 
         display: table-cell; 
         vertical-align: middle; 
     }

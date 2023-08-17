@@ -275,7 +275,7 @@ const deleteTrip = async (req, res) => {
                 return res.status(401).json({status: 401, data: null, message: "Unauthorized"})
             }
 
-            if (req.body.name) {
+                if (req.body.name) {
                 queryResult.expenses.find(item => item.expenseId === req.params.expense).name = req.body.name;
                 }
                 if (req.body.category) {
@@ -287,6 +287,9 @@ const deleteTrip = async (req, res) => {
                 if (req.body.amount) {
                 queryResult.expenses.find(item => item.expenseId === req.params.expense).amount = req.body.amount;
                 }
+                if (req.body.distribution) {
+                    queryResult.expenses.find(item => item.expenseId === req.params.expense).distribution = req.body.distribution;
+                    }
                 
             const result = await db.collection("trips").updateOne({ _id }, { $set: { expenses: queryResult.expenses } }); 
             client.close();
