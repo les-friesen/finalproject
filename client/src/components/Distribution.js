@@ -52,6 +52,7 @@ const Distribution = ({participants, formData, setFormData, isChecked, setIsChec
                         </div>
                         <div className="ratioAndAmount">
                         <input 
+                            required
                             type="number" 
                             value={formData.distribution[index]} onKeyDown={ (e) => (e.key === '-' ) && e.preventDefault()} 
                             id={index} 
@@ -80,12 +81,14 @@ const Wrapper = styled.div`
     .participant {
         display: flex; 
         flex-direction: row; 
+        align-items: center; 
         justify-content: space-between; 
         margin-top: 5px; 
     }
 
     .person span {
         margin-left: 20px; 
+         
     }
 
     .ratioAndAmount {
@@ -93,6 +96,7 @@ const Wrapper = styled.div`
         display: flex;
         flex-direction: row;
         justify-content: space-between; 
+        align-items: center; 
 
         input {
             width: 40px; 

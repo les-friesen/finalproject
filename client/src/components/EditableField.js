@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useAuth0 } from "@auth0/auth0-react";
 
-const EditableField = ({ field, inputType, initialValue, tripId, setUpdateData, expenseId, formData, setFormData }) => {
+const EditableField = ({ field, inputType, initialValue, tripId, setUpdateData, expenseId, formData, setFormData, participants }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [inputValue, setInputValue] = useState(initialValue);
     const { getAccessTokenSilently } = useAuth0(); 
@@ -82,7 +82,17 @@ const EditableField = ({ field, inputType, initialValue, tripId, setUpdateData, 
                 <option value="Shopping">Shopping</option>
                 <option value="Other">Other</option>
             </select>
-            : isEditing 
+            : isEditing && field === "paidBy"
+            ?  <select autoFocus className="form-select" id="paidBy" name="paidBy" onChange={handleChange} onBlur={handleBlur}>
+                    <option value="">Select participant</option>
+                            { participants.map((participant, index) => {
+                                return (
+                                    <option key={index} value={participant}>{participant}</option>
+                                )
+                            })
+                            }
+                </select>
+            : isEditing
             ? <input
                 className="input"
                 autoFocus

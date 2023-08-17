@@ -1,4 +1,3 @@
-// Add custom categories?
 import { useAuth0 } from "@auth0/auth0-react";
 import beach1 from "../assets/beach1.jpg"
 import styled from 'styled-components'
@@ -52,89 +51,89 @@ const TripDetails = () => {
         fetchTrip(); 
     }, [updateData])
 
-return (
-    <Background>
-        {  !tripData 
-        ?   <ProgressDiv>
-                <CircularProgress /> 
-            </ProgressDiv>  
-        :   <>
-                <div className="body">
-                    <div className="title">
-                        <EditableField 
-                            inputType="text" 
-                            field="tripName" 
-                            initialValue={tripData.tripName} 
-                            tripId={tripData._id} 
-                            setUpdateData={setUpdateData}/>
+    return (
+        <Background>
+            {  !tripData 
+            ?   <ProgressDiv>
+                    <CircularProgress /> 
+                </ProgressDiv>  
+            :   <>
+                    <div className="body">
+                        <div className="title">
+                            <EditableField 
+                                inputType="text" 
+                                field="tripName" 
+                                initialValue={tripData.tripName} 
+                                tripId={tripData._id} 
+                                setUpdateData={setUpdateData}/>
+                        </div>
+                        <div className="field">
+                            <EditableField 
+                                inputType="date" 
+                                field="startDate" 
+                                initialValue={tripData.startDate} 
+                                tripId={tripData._id} 
+                                setUpdateData={setUpdateData}/>
+                            <span> to </span>
+                            <EditableField 
+                                inputType="date" 
+                                field="endDate" 
+                                initialValue={tripData.endDate} 
+                                tripId={tripData._id} 
+                                setUpdateData={setUpdateData}/>
+                        </div>
+                        {tripData.participants?.length > 1 && 
+                        <div className="paragraph">
+                        <p> <span>Participants: </span>
+                        {tripData.participants?.map((participant, index) => {
+                            return (
+                                <span key={index}>
+                                <span>{participant}</span> 
+                                <span>{index + 1 === tripData.participants?.length ? <span>. </span> : <span>, </span>}</span>
+                                </span>)
+                            })}
+                        </p>
+                        </div>}
+                        <div className="field"> 
+                            <span>Total Budget: </span> 
+                            <EditableField 
+                                inputType="number" 
+                                field="budget" 
+                                initialValue={tripData.budget} 
+                                tripId={tripData._id} 
+                                setUpdateData={setUpdateData} />
+                            <span>  {tripData.currency}</span>
+                        </div>
+                        <div className="field">
+                            You have spent {calcTotal(tripData.expenses)} {tripData.currency} so far, which is {calcPercent(calcTotal(tripData.expenses), tripData.budget)}% of your allotted budget. 
+                        </div> 
+                        <ProgressBar completed={calcPercent(calcTotal(tripData.expenses), tripData.budget)} />
+                        <div className="field">This is the trip details page. You have {tripData.expenses.length} expenses so far</div>
                     </div>
-                    <div className="field">
-                        <EditableField 
-                            inputType="date" 
-                            field="startDate" 
-                            initialValue={tripData.startDate} 
-                            tripId={tripData._id} 
-                            setUpdateData={setUpdateData}/>
-                        <span> to </span>
-                        <EditableField 
-                            inputType="date" 
-                            field="endDate" 
-                            initialValue={tripData.endDate} 
-                            tripId={tripData._id} 
-                            setUpdateData={setUpdateData}/>
-                    </div>
-                    {tripData.participants?.length > 1 && 
-                    <div className="paragraph">
-                    <p> <span>Participants: </span>
-                    {tripData.participants?.map((participant, index) => {
-                        return (
-                            <span key={index}>
-                            <span>{participant}</span> 
-                            <span>{index + 1 === tripData.participants?.length ? <span>. </span> : <span>, </span>}</span>
-                            </span>)
-                        })}
-                    </p>
-                    </div>}
-                    <div className="field"> 
-                        <span>Total Budget: </span> 
-                        <EditableField 
-                            inputType="number" 
-                            field="budget" 
-                            initialValue={tripData.budget} 
-                            tripId={tripData._id} 
-                            setUpdateData={setUpdateData} />
-                        <span>  {tripData.currency}</span>
-                    </div>
-                    <div className="field">
-                        You have spent {calcTotal(tripData.expenses)} {tripData.currency} so far, which is {calcPercent(calcTotal(tripData.expenses), tripData.budget)}% of your allotted budget. 
-                    </div> 
-                    <ProgressBar completed={calcPercent(calcTotal(tripData.expenses), tripData.budget)} />
-                    <div className="field">This is the trip details page. You have {tripData.expenses.length} expenses so far</div>
-                </div>
-                <AddExpense 
-                    updateData={updateData} 
-                    setUpdateData={setUpdateData} 
-                    tripId={tripData._id} 
-                    baseCurrency={tripData.currency}
-                    participants={tripData.participants ? tripData.participants : []}/>
-                { tripData.expenses.length > 0 && 
-                <SortableTable 
-                    participants={tripData.participants}
-                    direction={direction} 
-                    setDirection={setDirection} 
-                    setSortBy={setSortBy} 
-                    sortedItems={sortedItems} 
-                    setSortedItems={setSortedItems} 
-                    expenses={tripData.expenses} 
-                    currency={tripData.currency} 
-                    updateData={updateData} 
-                    setUpdateData={setUpdateData} 
-                    tripId={tripData._id}/>
-                }
-            </>
-        }
-    </Background>
-)
+                    <AddExpense 
+                        updateData={updateData} 
+                        setUpdateData={setUpdateData} 
+                        tripId={tripData._id} 
+                        baseCurrency={tripData.currency}
+                        participants={tripData.participants ? tripData.participants : []}/>
+                    { tripData.expenses.length > 0 && 
+                    <SortableTable 
+                        participants={tripData.participants}
+                        direction={direction} 
+                        setDirection={setDirection} 
+                        setSortBy={setSortBy} 
+                        sortedItems={sortedItems} 
+                        setSortedItems={setSortedItems} 
+                        expenses={tripData.expenses} 
+                        currency={tripData.currency} 
+                        updateData={updateData} 
+                        setUpdateData={setUpdateData} 
+                        tripId={tripData._id}/>
+                    }
+                </>
+            }
+        </Background>
+    )
 }
 
 const ProgressDiv = styled.div`

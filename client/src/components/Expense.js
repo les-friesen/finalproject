@@ -8,13 +8,13 @@ import { CircularProgress } from '@mui/material';
 
 const Expense = ( {expenseDetails, updateData, setUpdateData, tripId, participants} ) => {
 
-    const { name, category, date, amount, expenseId, paidBy, distribution } = expenseDetails; 
+    const { name, category, date, amount, expenseId, paidBy } = expenseDetails; 
     const [ isChecked, setIsChecked ] = useState(() => {
-        if (!distribution) {
+        if (!expenseDetails.distribution) {
             return null
         }
         let arr = []; 
-        distribution.forEach((item, i) => {
+        expenseDetails.distribution.forEach((item, i) => {
             if (item === "0") {
                 arr[i] = false;
             } else {
@@ -24,7 +24,7 @@ const Expense = ( {expenseDetails, updateData, setUpdateData, tripId, participan
         return arr; 
     }) 
     const [formData, setFormData] = useState({
-        amount: amount, distribution: distribution
+        amount: amount, distribution: expenseDetails.distribution
     })
     const [isViewing, setIsViewing] = useState(false)
     const { getAccessTokenSilently } = useAuth0(); 
@@ -46,14 +46,9 @@ const Expense = ( {expenseDetails, updateData, setUpdateData, tripId, participan
         }
     }
 
-    const handleUpdate = async () => {
-        if (formData.distribution !== distribution) {
-            patchExpense(); 
-        }
-    }
-
-    const patchExpense = async () => {
-        setUpdateData("loading"); 
+    const patchExpense = async (e) => {
+        e.preventDefault();
+        setUpdateData("loading2"); 
         try {
             const token = await getAccessTokenSilently();
             const response = await fetch(`/editExpense/${tripId}/${expenseId}`, {
@@ -66,8 +61,7 @@ const Expense = ( {expenseDetails, updateData, setUpdateData, tripId, participan
                 body: JSON.stringify({ distribution : formData.distribution})
                 })
             const data = await response.json();
-                setUpdateData(data); 
-                setIsViewing(false);   
+                setUpdateData(data);   
         } catch (error) {
             console.log(error.message);
         }
@@ -99,7 +93,16 @@ const Expense = ( {expenseDetails, updateData, setUpdateData, tripId, participan
                         setUpdateData={setUpdateData}/>
                 </td>
                 { paidBy && 
-                <td>{paidBy} </td>
+                <td>
+                    <EditableField 
+                        initialValue={paidBy}
+                        inputType="select"
+                        field="paidBy"
+                        tripId={tripId}
+                        expenseId={expenseId}
+                        setUpdateData={setUpdateData}
+                        participants={participants}/>
+                </td>
                 }
                 <td>
                     <EditableField 
@@ -131,7 +134,9 @@ const Expense = ( {expenseDetails, updateData, setUpdateData, tripId, participan
             {isViewing && 
             <tr style={{backgroundColor: "#fcfbe3"}}>
                 <td colSpan="6">
+                    <form onSubmit={e => patchExpense(e)}>  
                     <Div>
+                        
                         <Distribution 
                             formData={formData} 
                             setFormData={setFormData} 
@@ -139,13 +144,19 @@ const Expense = ( {expenseDetails, updateData, setUpdateData, tripId, participan
                             isChecked={isChecked} 
                             setIsChecked={setIsChecked}/>
                         <div>
-                            <button className="update" onClick={handleUpdate}>
-                                {updateData === "loading" 
-                                    ? <CircularProgress style={{'color': 'white'}} size="1em" /> 
-                                    : <span>Save New Distribution</span>}
+                            <button 
+                                disabled={ JSON.stringify(formData.distribution) === JSON.stringify(expenseDetails.distribution) ? true : false }
+                                className="update">
+                                    {updateData === "loading2" 
+                                        ? <CircularProgress style={{'color': 'white'}} size="1em" /> 
+                                        : <span>Save New Distribution</span>}
                             </button>
                         </div>
+                        
+                        <div className="empty">
+                        </div>
                     </Div>
+                    </form>
                 </td>
             </tr>}
         </>
@@ -153,6 +164,11 @@ const Expense = ( {expenseDetails, updateData, setUpdateData, tripId, participan
 }
 
 const Div = styled.div`
+
+display: flex;
+flex-direction: row; 
+align-items: flex-end; 
+justify-content: space-around;
 
 .update {
         background-color: #17918b; 
@@ -166,8 +182,7 @@ const Div = styled.div`
         display: flex;
         justify-content: center; 
         align-items: center; 
-        margin-bottom: 20px; 
-        margin-right: 20px; 
+        margin-bottom: 20px;  
         span {
             margin-left: 5px; 
         }
@@ -177,10 +192,14 @@ button:hover {
     cursor: pointer; 
 }
 
-display: flex;
-flex-direction: row; 
-align-items: flex-end; 
-justify-content: space-between;
+button:disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.empty {
+    width: 250px;  
+}
 
 `; 
 

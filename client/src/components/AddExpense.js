@@ -209,7 +209,7 @@ const AddExpense = ( {participants, updateData, setUpdateData, tripId, baseCurre
                         </div>
                         <div className="break"></div>
                         <div className="distribution">
-                            <label className="distributionLabel" htmlFor="distribution">distribution ratio</label>
+                            <label className="distributionLabel" htmlFor="distribution">for whom? (distribution ratio)</label>
                             <Distribution 
                                 formData={formData} 
                                 setFormData={setFormData} 

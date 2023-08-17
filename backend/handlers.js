@@ -290,6 +290,9 @@ const deleteTrip = async (req, res) => {
                 if (req.body.distribution) {
                     queryResult.expenses.find(item => item.expenseId === req.params.expense).distribution = req.body.distribution;
                     }
+                if (req.body.paidBy) {
+                    queryResult.expenses.find(item => item.expenseId === req.params.expense).paidBy = req.body.paidBy;
+                }
                 
             const result = await db.collection("trips").updateOne({ _id }, { $set: { expenses: queryResult.expenses } }); 
             client.close();
