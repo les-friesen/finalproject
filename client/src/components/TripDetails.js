@@ -9,6 +9,7 @@ import AddExpense from "./AddExpense";
 import { calcPercent, calcTotal, sortTableData } from "../helpers";
 import SortableTable from "./SortableTable";
 import ProgressBar from "./ProgressBar";
+import Balances from "./Balances";
 
 const TripDetails = () => {
 
@@ -108,7 +109,11 @@ const TripDetails = () => {
                             You have spent {calcTotal(tripData.expenses)} {tripData.currency} so far, which is {calcPercent(calcTotal(tripData.expenses), tripData.budget)}% of your allotted budget. 
                         </div> 
                         <ProgressBar completed={calcPercent(calcTotal(tripData.expenses), tripData.budget)} />
-                        <div className="field">This is the trip details page. You have {tripData.expenses.length} expenses so far</div>
+                        { tripData.expenses.length > 0 && tripData.participants?.length > 1 &&
+                            <Balances 
+                                expenses={tripData.expenses}
+                                participants={tripData.participants}/> 
+                        }
                     </div>
                     <AddExpense 
                         updateData={updateData} 
@@ -160,7 +165,7 @@ const Background = styled.div`
         display: flex; 
         flex-direction: column; 
         background-color: #fcfbe3;
-        opacity: 0.75; 
+        
         width: 85vw;
         border-radius: 5px;  
         padding: 20px; 
@@ -193,6 +198,7 @@ const Background = styled.div`
         
         .title {
             font-size: 2em; 
+            text-align: center; 
         }
 }
 `

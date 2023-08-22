@@ -229,58 +229,56 @@ const AddExpense = ( {participants, updateData, setUpdateData, tripId, baseCurre
                 </form>
                 <div className="currency">
                     { usingCalculator 
-                    ?
-                    <div>
-                    <div className="field">
-                            <label htmlFor="currency">currency </label>
-                            <select 
-                                className="form-select" 
-                                id="currency" 
-                                name="currency" 
-                                onChange={(e) => handleCurrencyChange(e.target.id, e.target.value)}>
-                                    <optgroup>
-                                        <option value=''>Select currency</option>
-                                            { currency_list.map((item) => {
-                                                    return (
-                                                        <option key={item.code} value={item.code}>{item.code} - {item.name}</option>
-                                                    )
-                                                })
-                                            }
-                                    </optgroup>
-                            </select>
-                    </div>
-                    <div className="field">
-                            <label htmlFor="currencyDate">exchange date </label>
-                            <input 
-                                required 
-                                className="dateInput" 
-                                max={new Date().toJSON().slice(0, 10)} 
-                                type="date" id="currencyDate" 
-                                onChange={(e) => handleCurrencyChange(e.target.id, e.target.value)}/>
-                    </div>
-                    <div className="field">
-                            <label htmlFor="rate">rate </label>
-                            <input 
-                                className="numberInput" 
-                                value={currencyData.rate} 
-                                type="number" 
-                                step=".000001" 
-                                id="rate" 
-                                onChange={(e) => handleCurrencyChange(e.target.id, e.target.value)}/>
-                    </div>
-                    <div className="field">
-                            <label htmlFor="amount">amount {currencyData.currency ? ` - ${currencyData.currency}` : ""}</label>
-                            <input 
-                                required 
-                                className="numberInput" 
-                                type="number" 
-                                step=".01" 
-                                id="amount" 
-                                onChange={(e) => handleCurrencyChange(e.target.id, e.target.value)}/>
-                    </div>
+                    ?<div>
+                        <div className="field">
+                                <label htmlFor="currency">currency </label>
+                                <select 
+                                    className="form-select" 
+                                    id="currency" 
+                                    name="currency" 
+                                    onChange={(e) => handleCurrencyChange(e.target.id, e.target.value)}>
+                                        <optgroup>
+                                            <option value=''>Select currency</option>
+                                                { currency_list.map((item) => {
+                                                        return (
+                                                            <option key={item.code} value={item.code}>{item.code} - {item.name}</option>
+                                                        )
+                                                    })
+                                                }
+                                        </optgroup>
+                                </select>
+                        </div>
+                        <div className="field">
+                                <label htmlFor="currencyDate">exchange date </label>
+                                <input 
+                                    required 
+                                    className="dateInput" 
+                                    max={new Date().toJSON().slice(0, 10)} 
+                                    type="date" id="currencyDate" 
+                                    onChange={(e) => handleCurrencyChange(e.target.id, e.target.value)}/>
+                        </div>
+                        <div className="field">
+                                <label htmlFor="rate">rate </label>
+                                <input 
+                                    className="numberInput" 
+                                    value={currencyData.rate} 
+                                    type="number" 
+                                    step=".000001" 
+                                    id="rate" 
+                                    onChange={(e) => handleCurrencyChange(e.target.id, e.target.value)}/>
+                        </div>
+                        <div className="field">
+                                <label htmlFor="amount">amount {currencyData.currency ? ` - ${currencyData.currency}` : ""}</label>
+                                <input 
+                                    required 
+                                    className="numberInput" 
+                                    type="number" 
+                                    step=".01" 
+                                    id="amount" 
+                                    onChange={(e) => handleCurrencyChange(e.target.id, e.target.value)}/>
+                        </div>
                     </div> 
-                    :
-                    <div className="emptySpace">
+                    :<div className="emptySpace">
                         <p>If you paid for your expense with a currency other than {baseCurrency}, click below to use the optional currency converter!</p>
                     </div>
                     }
@@ -323,7 +321,6 @@ const Wrapper = styled.div`
         flex-direction: row; 
         justify-content: space-between; 
         background-color: #fcfbe3;
-        opacity: 0.75; 
         width: 550px;
         border-radius: 5px;  
         font-family: var(--font-carterone)

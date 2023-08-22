@@ -68,6 +68,23 @@ const Expense = ( {expenseDetails, updateData, setUpdateData, tripId, participan
     }
 
     const handleView = () => {
+        if (isViewing) {
+            setFormData({amount: amount, distribution: expenseDetails.distribution})
+            setIsChecked(() => {
+                if (!expenseDetails.distribution) {
+                    return null
+                }
+                let arr = []; 
+                expenseDetails.distribution.forEach((item, i) => {
+                    if (item === "0") {
+                        arr[i] = false;
+                    } else {
+                        arr[i] = true;
+                    }
+                })
+                return arr; 
+            }) 
+        }
         setIsViewing(!isViewing)
     }
 
