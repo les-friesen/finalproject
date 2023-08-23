@@ -1,21 +1,22 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import styled from "styled-components"; 
 import AddTrip from "./AddTrip";
 import beach1 from "../assets/beach1.jpg"
 import Trip from "./Trip";
 import { CircularProgress } from '@mui/material';
+import { ReloadContext } from "./reloadContext";
 
 const HomePage = () => {
 
+    const { reload } = useContext(ReloadContext); 
     const { user, isAuthenticated, getAccessTokenSilently } = useAuth0(); 
     const [ tripData, setTripData] = useState(); 
-    const [ updateData, setUpdateData ] = useState(); 
 
     useEffect (() => {
         if (user) {
         fetchTrips()}; 
-    }, [isAuthenticated, updateData]
+    }, [isAuthenticated, reload]
     )
 
     const fetchTrips = async () => {
@@ -45,10 +46,10 @@ const HomePage = () => {
             <div className="welcome">
             <span>Welcome {user.nickname}! {tripData.length > 1 ? `You have created ${tripData.length} trips so far!` : tripData.length === 1 ? "You have created 1 trip so far!" : "Start by creating your first trip"}  </span>
             </div>
-            <AddTrip updateData={updateData} setUpdateData={setUpdateData}/>
+            <AddTrip />
             { tripData.map((trip, index) => {
                 return (
-                    <Trip key={tripData[index]._id} tripData={trip} setUpdateData={setUpdateData}/> 
+                    <Trip key={tripData[index]._id} tripData={trip}/> 
                 )
                 })
             }

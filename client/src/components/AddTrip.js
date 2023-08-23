@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import styled from "styled-components"; 
 import { FiFilePlus, FiFileMinus, FiTrash2 } from "react-icons/fi"; 
 import { useAuth0 } from "@auth0/auth0-react";
 import { currency_list } from "../data";
 import { CircularProgress } from "@mui/material";
+import { ReloadContext } from "./reloadContext";
 
-const AddTrip = ( {updateData, setUpdateData} ) => {
+const AddTrip = () => {
 
+    const { setReload, isLoading, setIsLoading } = useContext(ReloadContext); 
     const [creatingTrip, setCreatingTrip] = useState(false); 
     const [formData, setFormData] = useState({ participants : []}); 
     const [addParticipant, setAddParticipant] = useState(""); 
@@ -52,6 +54,7 @@ const AddTrip = ( {updateData, setUpdateData} ) => {
     }
 
     const AddTrip = async () => {
+        setIsLoading("loadingtrip")
         try {
             const token = await getAccessTokenSilently();
             const response = await fetch(`/addTrip`, {
@@ -64,17 +67,18 @@ const AddTrip = ( {updateData, setUpdateData} ) => {
                 body: JSON.stringify(formData)
                 })
             const data = await response.json();
-                setUpdateData(data);
-                setFormData();
+                setIsLoading("");
+                setReload(data); 
+                setFormData({ participants : []});
                 setCreatingTrip(false); 
         } catch (error) {
             console.log(error);
+            setIsLoading("");
         }
     }
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        setUpdateData("loading");
         AddTrip(); 
     }
 
@@ -181,7 +185,7 @@ const AddTrip = ( {updateData, setUpdateData} ) => {
                         <div className="submitButton">
                             <button 
                                 type="submit">
-                                    {updateData === "loading" 
+                                    {isLoading === "loadingtrip" 
                                         ? <CircularProgress style={{'color': 'white'}} size="1em" />
                                         : <><FiFilePlus/> <span>Create Trip </span></>
                                     }

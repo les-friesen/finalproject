@@ -5,14 +5,19 @@ import { Link } from "react-router-dom";
 import { calcPercent, calcTotal } from "../helpers";
 import ProgressBar from "./ProgressBar";
 import { useAuth0 } from "@auth0/auth0-react";
+import { useContext } from "react";
+import { ReloadContext } from "./reloadContext";
+import { CircularProgress } from "@mui/material";
 
-const Trip = ( {tripData, setUpdateData} ) => {
+const Trip = ( {tripData} ) => {
 
+    const { setReload, isLoading, setIsLoading } = useContext(ReloadContext); 
     const { tripName, startDate, endDate, currency, expenses, budget, _id, participants } = tripData; 
     const { getAccessTokenSilently } = useAuth0(); 
     const total = calcTotal(expenses);
 
-    const handleDelete = async () => {
+    const handleDelete = async (value) => {
+        setIsLoading(value)
         try {
             const token = await getAccessTokenSilently();
             const response = await fetch(`/deleteTrip/${_id}`, {
@@ -22,9 +27,12 @@ const Trip = ( {tripData, setUpdateData} ) => {
                 }
             })
             const data = await response.json();
-                setUpdateData(data)
+                //setUpdateData(data);
+                setIsLoading("")
+                setReload(data); 
         } catch (error) {
         console.log(error);
+        setIsLoading("");
         }
     }
 
@@ -35,23 +43,20 @@ const Trip = ( {tripData, setUpdateData} ) => {
                     inputType="text" 
                     field="tripName" 
                     initialValue={tripName} 
-                    tripId={_id} 
-                    setUpdateData={setUpdateData}/>
+                    tripId={_id}/>
             </div>
             <div className="paragraph">
                 <EditableField 
                     inputType="date" 
                     field="startDate" 
                     initialValue={startDate} 
-                    tripId={_id} 
-                    setUpdateData={setUpdateData}/>
+                    tripId={_id}/>
                 <span> to </span>
                 <EditableField 
                     inputType="date" 
                     field="endDate" 
                     initialValue={endDate} 
-                    tripId={_id} 
-                    setUpdateData={setUpdateData}/>
+                    tripId={_id}/>
             </div>
             {participants?.length > 1 && 
             <div className="paragraph">
@@ -71,8 +76,7 @@ const Trip = ( {tripData, setUpdateData} ) => {
                     inputType="number" 
                     field="budget" 
                     initialValue={budget} 
-                    tripId={_id} 
-                    setUpdateData={setUpdateData} />
+                    tripId={_id}/>
                 <span>  {currency}</span>
             </div>
             <div className="paragraph">
@@ -85,7 +89,11 @@ const Trip = ( {tripData, setUpdateData} ) => {
                     <StyledLink to={`/${_id}`}><button><FiFilePlus/> <span>Add/Edit Expenses</span></button></StyledLink>
                 </div>
                 <div className="buttonWrapper">
-                    <button onClick={handleDelete}><FiTrash2 size={20}/></button>
+                    <button id={tripName} onClick={(e) => handleDelete(e.currentTarget.id)}>
+                        {isLoading === tripName
+                                    ? <CircularProgress style={{'color': 'black'}} size="1em" /> 
+                                    : <FiTrash2 size={20}/> } 
+                    </button>
                 </div>
             </div>
         </Wrapper>

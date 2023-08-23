@@ -1,13 +1,15 @@
 import { FiTrash2, FiChevronsDown, FiChevronsUp } from 'react-icons/fi';
 import EditableField from './EditableField';
 import { useAuth0 } from "@auth0/auth0-react";
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import Distribution from './Distribution';
 import styled from 'styled-components'
 import { CircularProgress } from '@mui/material';
+import { ReloadContext } from './reloadContext';
 
-const Expense = ( {expenseDetails, updateData, setUpdateData, tripId, participants} ) => {
+const Expense = ( {expenseDetails, tripId, participants} ) => {
 
+    const { setReload, isLoading, setIsLoading } = useContext(ReloadContext); 
     const { name, category, date, amount, expenseId, paidBy } = expenseDetails; 
     const [ isChecked, setIsChecked ] = useState(() => {
         if (!expenseDetails.distribution) {
@@ -29,7 +31,8 @@ const Expense = ( {expenseDetails, updateData, setUpdateData, tripId, participan
     const [isViewing, setIsViewing] = useState(false)
     const { getAccessTokenSilently } = useAuth0(); 
     
-    const handleDelete = async () => {
+    const handleDelete = async (value) => {
+        setIsLoading(value);
         try {
             const token = await getAccessTokenSilently();
             const response = await fetch(`/deleteExpense/${tripId}/${expenseId}`, {
@@ -39,16 +42,17 @@ const Expense = ( {expenseDetails, updateData, setUpdateData, tripId, participan
                 }
             })
             const data = await response.json();
-                setUpdateData(data)
-                console.log(data)
+                setReload(data); 
+                setIsLoading("");
         } catch (error) {
         console.log(error);
+        setIsLoading("");
         }
     }
 
-    const patchExpense = async (e) => {
-        e.preventDefault();
-        setUpdateData("loading2"); 
+    const patchExpense = async () => {
+      
+        setIsLoading("loadingdistribution");
         try {
             const token = await getAccessTokenSilently();
             const response = await fetch(`/editExpense/${tripId}/${expenseId}`, {
@@ -61,10 +65,16 @@ const Expense = ( {expenseDetails, updateData, setUpdateData, tripId, participan
                 body: JSON.stringify({ distribution : formData.distribution})
                 })
             const data = await response.json();
-                setUpdateData(data);   
+                setReload(data);  
         } catch (error) {
             console.log(error.message);
+            setIsLoading("");
         }
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        patchExpense(); 
     }
 
     const handleView = () => {
@@ -97,8 +107,7 @@ const Expense = ( {expenseDetails, updateData, setUpdateData, tripId, participan
                         inputType="text" 
                         field="name" 
                         tripId={tripId} 
-                        expenseId={expenseId} 
-                        setUpdateData={setUpdateData}/>
+                        expenseId={expenseId}/>
                 </td>
                 <td>
                     <EditableField 
@@ -106,8 +115,7 @@ const Expense = ( {expenseDetails, updateData, setUpdateData, tripId, participan
                         inputType="select" 
                         field="category" 
                         tripId={tripId} 
-                        expenseId={expenseId} 
-                        setUpdateData={setUpdateData}/>
+                        expenseId={expenseId}/>
                 </td>
                 { paidBy && 
                 <td>
@@ -117,7 +125,6 @@ const Expense = ( {expenseDetails, updateData, setUpdateData, tripId, participan
                         field="paidBy"
                         tripId={tripId}
                         expenseId={expenseId}
-                        setUpdateData={setUpdateData}
                         participants={participants}/>
                 </td>
                 }
@@ -127,8 +134,7 @@ const Expense = ( {expenseDetails, updateData, setUpdateData, tripId, participan
                         inputType="date" 
                         field="date" 
                         tripId={tripId} 
-                        expenseId={expenseId} 
-                        setUpdateData={setUpdateData}/>
+                        expenseId={expenseId}/>
                 </td>
                 <td>
                     <EditableField 
@@ -138,11 +144,18 @@ const Expense = ( {expenseDetails, updateData, setUpdateData, tripId, participan
                         inputType="number" 
                         field="amount" 
                         tripId={tripId} 
-                        expenseId={expenseId} 
-                        setUpdateData={setUpdateData}/>
+                        expenseId={expenseId}/>
                 </td>
                 <td>
-                    <button className="delete" onClick={handleDelete}><FiTrash2/></button>
+                    <button
+                        className="delete" 
+                        id={expenseId} 
+                        disabled={ isLoading === "loading" ? true : isLoading === expenseId ? true : false}
+                        onClick={(e) => handleDelete(e.currentTarget.id)}>
+                        {isLoading === expenseId
+                                    ? <CircularProgress style={{'color': 'black'}} size="1em" /> 
+                                    : <FiTrash2 /> } 
+                    </button>
                     { paidBy && 
                     <button className="view" onClick={handleView} >{isViewing? <FiChevronsUp/> : <FiChevronsDown/>}</button>
                     }
@@ -151,9 +164,8 @@ const Expense = ( {expenseDetails, updateData, setUpdateData, tripId, participan
             {isViewing && 
             <tr style={{backgroundColor: "#fcfbe3"}}>
                 <td colSpan="6">
-                    <form onSubmit={e => patchExpense(e)}>  
+                    <form onSubmit={e => handleSubmit(e)}>  
                     <Div>
-                        
                         <Distribution 
                             formData={formData} 
                             setFormData={setFormData} 
@@ -162,14 +174,14 @@ const Expense = ( {expenseDetails, updateData, setUpdateData, tripId, participan
                             setIsChecked={setIsChecked}/>
                         <div>
                             <button 
-                                disabled={ JSON.stringify(formData.distribution) === JSON.stringify(expenseDetails.distribution) ? true : false }
+                                id={expenseId} 
+                                disabled={ isLoading === "loading" ? true : JSON.stringify(formData.distribution) === JSON.stringify(expenseDetails.distribution) ? true : false }
                                 className="update">
-                                    {updateData === "loading2" 
+                                    {isLoading === "loadingdistribution"
                                         ? <CircularProgress style={{'color': 'white'}} size="1em" /> 
                                         : <span>Save New Distribution</span>}
                             </button>
                         </div>
-                        
                         <div className="empty">
                         </div>
                     </Div>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import styled from "styled-components"; 
 import { FiFilePlus, FiFileMinus } from "react-icons/fi"; 
 import { currency_list } from "../data";
@@ -6,9 +6,12 @@ import {BiCalculator} from "react-icons/bi";
 import { CircularProgress } from "@mui/material";
 import { useAuth0 } from "@auth0/auth0-react";
 import Distribution from "./Distribution";
+import { ReloadContext } from "./reloadContext";
 
-const AddExpense = ( {participants, updateData, setUpdateData, tripId, baseCurrency} ) => {
 
+const AddExpense = ( {participants, tripId, baseCurrency} ) => {
+
+    const { setReload, isLoading, setIsLoading } = useContext(ReloadContext); 
     const [creatingExpense, setCreatingExpense] = useState(false); 
     const [usingCalculator, setUsingCalculator] = useState(false); 
     const [formData, setFormData] = useState(() => {
@@ -99,6 +102,7 @@ const AddExpense = ( {participants, updateData, setUpdateData, tripId, baseCurre
     }
 
     const addExpense = async () => {
+        setIsLoading("loadingexpense");
         try {
             const token = await getAccessTokenSilently();
             const response = await fetch(`/addExpense/${tripId}`, {
@@ -111,7 +115,9 @@ const AddExpense = ( {participants, updateData, setUpdateData, tripId, baseCurre
                 body: JSON.stringify(formData)
                 })
             const data = await response.json();
-                setUpdateData(data);
+                //setUpdateData(data);
+                setIsLoading("")
+                setReload(data); 
                 setFormData(() => {
                     const arr = Array(participants.length).fill("1");
                     return { amount: 0, distribution: arr}
@@ -125,7 +131,6 @@ const AddExpense = ( {participants, updateData, setUpdateData, tripId, baseCurre
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        setUpdateData("loading");
         addExpense(); 
     }
 
@@ -221,7 +226,7 @@ const AddExpense = ( {participants, updateData, setUpdateData, tripId, baseCurre
                         }
                         <div className="submitButton" style={{left: participants.length > 1 ? '145px' : '0px'}}>
                             <button className="addExpenseButton"> 
-                                {updateData === "loading" 
+                                {isLoading === "loadingexpense" 
                                     ? <CircularProgress style={{'color': 'white'}} size="1em" /> 
                                     : <><FiFilePlus/> <span>Add Expense</span></>} 
                             </button>

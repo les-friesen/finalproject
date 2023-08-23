@@ -3,7 +3,7 @@ import { sortTableData } from '../helpers';
 import Expense from './Expense';
 import {BiSortAlt2} from "react-icons/bi"
 
-const SortableTable = ({participants, direction, setDirection, setSortBy, sortedItems, setSortedItems, currency, expenses, tripId, updateData, setUpdateData}) => {
+const SortableTable = ({participants, direction, setDirection, setSortBy, sortedItems, setSortedItems, currency, expenses, tripId}) => {
 
     const handleClick = event => {
         const sortDir = direction === 'descending' ? 'ascending' : 'descending'
@@ -67,8 +67,6 @@ return (
                                         key={expense.expenseId} 
                                         participants={participants} 
                                         expenseDetails={expense} 
-                                        updateData={updateData} 
-                                        setUpdateData={setUpdateData} 
                                         tripId={tripId}/>
                                 )
                             })

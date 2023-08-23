@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useAuth0 } from "@auth0/auth0-react";
+import { useContext } from 'react';
+import { ReloadContext } from './reloadContext';
 
-const EditableField = ({ field, inputType, initialValue, tripId, setUpdateData, expenseId, formData, setFormData, participants }) => {
+const EditableField = ({ field, inputType, initialValue, tripId, expenseId, formData, setFormData, participants }) => {
+    
+    const { reload, setReload } = useContext(ReloadContext); 
     const [isEditing, setIsEditing] = useState(false);
     const [inputValue, setInputValue] = useState(initialValue);
     const { getAccessTokenSilently } = useAuth0(); 
@@ -28,7 +32,7 @@ const EditableField = ({ field, inputType, initialValue, tripId, setUpdateData, 
                 body: JSON.stringify({ [field] : inputValue})
                 })
             const data = await response.json();
-            setUpdateData({data, field});
+            setReload({data, field});
         } catch (error) {
             console.log(error);
         }
@@ -47,7 +51,8 @@ const EditableField = ({ field, inputType, initialValue, tripId, setUpdateData, 
                 body: JSON.stringify({ [field] : inputValue})
                 })
             const data = await response.json();
-                setUpdateData(data);
+                //setUpdateData(data);
+                setReload(data); 
                 if (formData) {
                     setFormData({...formData, amount: inputValue})
                 }

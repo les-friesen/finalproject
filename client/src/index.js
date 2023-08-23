@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-
+import { ReloadProvider } from './components/reloadContext';
 import App from './components/App';
 import { Auth0Provider } from  '@auth0/auth0-react'; 
 
@@ -19,7 +19,9 @@ root.render(
       scope: "openid profile email",
     }}
     >
-    <App />
+      <ReloadProvider>
+        <App />
+      </ReloadProvider>
   </Auth0Provider>
 );
 

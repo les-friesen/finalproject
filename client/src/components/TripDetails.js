@@ -2,7 +2,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import beach1 from "../assets/beach1.jpg"
 import styled from 'styled-components'
 import { useParams, useNavigate } from "react-router-dom"
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { CircularProgress } from "@mui/material";
 import EditableField from "./EditableField";
 import AddExpense from "./AddExpense";
@@ -10,19 +10,21 @@ import { calcPercent, calcTotal, sortTableData } from "../helpers";
 import SortableTable from "./SortableTable";
 import ProgressBar from "./ProgressBar";
 import Balances from "./Balances";
+import { ReloadContext } from "./reloadContext";
 
 const TripDetails = () => {
 
+    const { reload, setIsLoading } = useContext(ReloadContext); 
     const { tripId } = useParams(); 
     const { getAccessTokenSilently } = useAuth0();
     const [ tripData, setTripData ] = useState(); 
-    const [ updateData, setUpdateData] = useState(); 
     const navigate = useNavigate(); 
     const [sortedItems, setSortedItems] = useState();
     const [direction, setDirection] = useState("ascending")
     const [sortBy, setSortBy] = useState("date")
 
     const fetchTrip = async () => {
+        setIsLoading("loading");
         try {
             const token = await getAccessTokenSilently();
             const response = await fetch(`/getTrip/${tripId}`, 
@@ -32,10 +34,12 @@ const TripDetails = () => {
                 )
             const data = await response.json();
             if (data.status !== 200) {
-                navigate("/")
+                navigate("/");
+                setIsLoading("");
             }
             else {
                 setTripData(data.data);
+                setIsLoading("");
                 if (direction && sortBy) {
                     setSortedItems(sortTableData(data.data.expenses, {sortBy, direction}))
                 } else {
@@ -44,13 +48,14 @@ const TripDetails = () => {
             } 
         } catch (error) {
             console.log(error);
-            navigate("/")
+            navigate("/");
+            setIsLoading("");
         }
     };
     
     useEffect(() => {
         fetchTrip(); 
-    }, [updateData])
+    }, [reload])
 
     return (
         <Background>
@@ -65,23 +70,20 @@ const TripDetails = () => {
                                 inputType="text" 
                                 field="tripName" 
                                 initialValue={tripData.tripName} 
-                                tripId={tripData._id} 
-                                setUpdateData={setUpdateData}/>
+                                tripId={tripData._id}/>
                         </div>
                         <div className="field">
                             <EditableField 
                                 inputType="date" 
                                 field="startDate" 
                                 initialValue={tripData.startDate} 
-                                tripId={tripData._id} 
-                                setUpdateData={setUpdateData}/>
+                                tripId={tripData._id}/>
                             <span> to </span>
                             <EditableField 
                                 inputType="date" 
                                 field="endDate" 
                                 initialValue={tripData.endDate} 
-                                tripId={tripData._id} 
-                                setUpdateData={setUpdateData}/>
+                                tripId={tripData._id}/>
                         </div>
                         {tripData.participants?.length > 1 && 
                         <div className="paragraph">
@@ -101,8 +103,7 @@ const TripDetails = () => {
                                 inputType="number" 
                                 field="budget" 
                                 initialValue={tripData.budget} 
-                                tripId={tripData._id} 
-                                setUpdateData={setUpdateData} />
+                                tripId={tripData._id} />
                             <span>  {tripData.currency}</span>
                         </div>
                         <div className="field">
@@ -116,8 +117,6 @@ const TripDetails = () => {
                         }
                     </div>
                     <AddExpense 
-                        updateData={updateData} 
-                        setUpdateData={setUpdateData} 
                         tripId={tripData._id} 
                         baseCurrency={tripData.currency}
                         participants={tripData.participants ? tripData.participants : []}/>
@@ -131,8 +130,6 @@ const TripDetails = () => {
                         setSortedItems={setSortedItems} 
                         expenses={tripData.expenses} 
                         currency={tripData.currency} 
-                        updateData={updateData} 
-                        setUpdateData={setUpdateData} 
                         tripId={tripData._id}/>
                     }
                 </>

@@ -209,7 +209,7 @@ const editTrip = async (req, res) => {
         const result = await db.collection("trips").updateOne({ _id }, { $set: { ...queryResult } }); 
         client.close();
             console.log("disconnected!");
-            res.status(201).json({ status: 201, data: result });
+            res.status(201).json({ status: 200, data: result });
     } catch (err) {
         console.log(err);
         res.status(500).json({ status: 500, data: req.body, message: err.message });
