@@ -115,7 +115,6 @@ const AddExpense = ( {participants, tripId, baseCurrency} ) => {
                 body: JSON.stringify(formData)
                 })
             const data = await response.json();
-                //setUpdateData(data);
                 setIsLoading("")
                 setReload(data); 
                 setFormData(() => {

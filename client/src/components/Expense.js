@@ -150,7 +150,7 @@ const Expense = ( {expenseDetails, tripId, participants} ) => {
                     <button
                         className="delete" 
                         id={expenseId} 
-                        disabled={ isLoading === "loading" ? true : isLoading === expenseId ? true : false}
+                        disabled={ isLoading === expenseId ? true : false}
                         onClick={(e) => handleDelete(e.currentTarget.id)}>
                         {isLoading === expenseId
                                     ? <CircularProgress style={{'color': 'black'}} size="1em" /> 
@@ -222,7 +222,7 @@ const Div = styled.div`
 
     button:disabled {
         pointer-events: none;
-        opacity: 0.5;
+        opacity: 0.6;
     }
 
     .empty {

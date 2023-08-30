@@ -21,10 +21,13 @@ const Balances = ({expenses, participants}) => {
                 totalUsed += +(expense.distribution[index])/denominator*(+expense.amount)
             })
         let balance = (totalPaid-totalUsed).toFixed(2)
+        console.log(balance)
         let object = {}
         object.name = participant;
-        object.amount = +balance; 
+        object.amount = +balance
+        
         users.push(object)
+        
         })
 
     let calculatedAmounts = []; 
@@ -74,7 +77,7 @@ const Balances = ({expenses, participants}) => {
                                     +users[index].amount >= 0 
                                     ? "owed"
                                     : "owing"} >
-                                    {users[index].amount}</p> 
+                                    {users[index].amount.toFixed(2)}</p> 
                             </div>
                         )
                     })
