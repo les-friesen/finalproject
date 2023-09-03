@@ -3,7 +3,6 @@
 const { MongoClient } = require("mongodb");
 const request = require('request-promise');
 
-
 require("dotenv").config();
 const { MONGO_URI } = process.env;
 
@@ -59,7 +58,6 @@ const getTripById = async (req, res) => {
         const db = client.db("travelTracker");
         console.log("connected!");
         const result = await db.collection("trips").findOne({ _id })
-        
         !result 
             ? res.status(404).json({ status: 404, data: null, message: "Not found" })
             : result.userId !== req.auth.payload.sub 

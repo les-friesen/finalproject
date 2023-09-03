@@ -1,5 +1,8 @@
 import styled from 'styled-components'
 
+// Component for the progress bar which shows how much of the total budget has been spent, 
+// and will change color accordingly.  
+
 const ProgressBar = ( { completed } ) => {
 
     return (

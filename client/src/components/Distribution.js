@@ -1,8 +1,14 @@
 import styled from "styled-components";
 import { sumArray } from "../helpers";
 
+// Component for choosing the distribution ratio for splitting an expense.
+// Set up in such a way that it can be used both in the display table and in the Add Expense form. 
+
 const Distribution = ({participants, formData, setFormData, isChecked, setIsChecked}) => {
 
+
+    // Function for changing the checkbox. If the distribution is already at zero, checking the box will
+    // set it back to one. If it is already 1 or another number, clicking the box will set it back to zero. 
     const handleCheckbox = (index) => {
         if (formData.distribution[index] === "0") {
             let newArray = [...formData.distribution]; 
@@ -21,6 +27,8 @@ const Distribution = ({participants, formData, setFormData, isChecked, setIsChec
         }
     }
 
+    // Function for changing the distribution ratio manually. If you manually set the 
+    // number to zero, it will also uncheck the box. 
     const handleDistribution = (index, value) => {
         if (value === "0") {
             let newArray2 = [...isChecked]

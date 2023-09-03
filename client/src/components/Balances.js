@@ -3,11 +3,16 @@ import { useState } from 'react'
 import { sumArray } from '../helpers';
 import {FaBalanceScaleLeft, FaBalanceScaleRight} from 'react-icons/fa'
 
+// Component for calculating and showing balances and suggested reimbursements for the
+// expense-splitting part of the app. 
 
 const Balances = ({expenses, participants}) => {
 
+    // State for viewing/hiding balances. 
     const [viewBalances, setViewBalances] = useState(false);
     
+    // Looping through participants to calculate how much they have paid (totalPaid) versus how much they owe
+    // (totalUsed), and then calculating each individual's final balance. 
     let users = [];
     participants.forEach((participant, index) => {
 
@@ -30,32 +35,49 @@ const Balances = ({expenses, participants}) => {
         
         })
 
+    // Copying the balances into a new array that can be mutated for the purposes of calculating
+    // the suggested reimbursements. 
     let calculatedAmounts = []; 
     users.forEach(user => {
         calculatedAmounts.push({name: user.name, amount: user.amount})}
     )
 
+    // whoOwesWho array. As we loop through the balances, we will push a string showing the amount each person owes.
+
     let whoOwesWho = [];
 
+    // while loop that will continue to run until the max amount in the calculatedAmounts array rounds to zero.
+
     while (Math.round(Math.max(...calculatedAmounts.map(item => item.amount))) !== 0) {
+        // sorting the array from lowest to highest
         let sorted = calculatedAmounts.sort((a,b) => a.amount - b.amount);
         let i = 0;
+        // Adding the highest and lowest balances together
         let value = +(sorted[sorted.length - 1].amount + sorted[i].amount).toFixed(2)
+
+        // If highest balance subtract lowest balance is positive integer, 
+        // the person with the lowest balance will owe their entire balance to that person. 
 
         if (value > 0) {
             whoOwesWho.push(sorted[i].name + " owes " + sorted[sorted.length - 1].name + " " + Math.abs(sorted[i].amount).toFixed(2))
+            // updating the variables for the next iteration of the loop
             sorted[i].amount = 0
             sorted[sorted.length - 1].amount = value;
             calculatedAmounts=[...sorted]
-            
+
+        // If highest balance subtract lowest balance is negative integer or zero, 
+        // the person with the lowest balance will pay the entire amount that the person with the highest balance is owed.
+        // They will then still have a remainder owing to someone else. 
         } else {
             whoOwesWho.push(sorted[i].name + " owes " + sorted[sorted.length - 1].name + " " + sorted[sorted.length - 1].amount.toFixed(2))
+            // updating the variables for the next iteration of the loop.
             sorted[i].amount = sorted[i].amount + sorted[sorted.length - 1].amount
             sorted[sorted.length - 1].amount = 0;
             calculatedAmounts=[...sorted]
         }
     } 
     
+    // Function for viewing/hiding balances tab. 
     const handleView = () => {
         setViewBalances(!viewBalances)
     }

@@ -1,5 +1,8 @@
 import { createGlobalStyle } from "styled-components";
 
+
+// CSS Reset and font variables declared 
+
 const GlobalStyle = createGlobalStyle`
 
 :root {

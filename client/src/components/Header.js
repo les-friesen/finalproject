@@ -1,8 +1,10 @@
 import styled from "styled-components"; 
 import { Link } from "react-router-dom";
 
+// Navigation bar componenet
 const Header = ( {loginWithPopup, logout, isAuthenticated }) => {
 
+    // Function for going directly to signup page with Auth0
     const handleSignUp = () => { 
         loginWithPopup({authorizationParams: {
             screen_hint: "signup",

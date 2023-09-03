@@ -7,17 +7,24 @@ import Trip from "./Trip";
 import { CircularProgress } from '@mui/material';
 import { ReloadContext } from "./reloadContext";
 
+// Component for the landing page. 
+
 const HomePage = () => {
 
     const { reload } = useContext(ReloadContext); 
     const { user, isAuthenticated, getAccessTokenSilently } = useAuth0(); 
     const [ tripData, setTripData] = useState(); 
 
+    // useEffect for reloading the page. Everytime the reload state is updated it will prompt a rerender. 
     useEffect (() => {
         if (user) {
         fetchTrips()}; 
     }, [isAuthenticated, reload]
     )
+
+    // Function for fetching all the trips associated with the logged in user. 
+    // "user.sub" is the userId Auth0 gives to each new user, which is also added as userId to every trip that is created.  
+    // Call to the backend (this one and all others) is secure by way of jwt token. 
 
     const fetchTrips = async () => {
         try {

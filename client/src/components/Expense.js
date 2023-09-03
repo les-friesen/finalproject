@@ -7,10 +7,18 @@ import styled from 'styled-components'
 import { CircularProgress } from '@mui/material';
 import { ReloadContext } from './reloadContext';
 
+// Component for displaying each Expense as a table row in the SortableTable componenent. 
+// A dropdown menu will add a second table row for viewing the distribution ratio. 
+
 const Expense = ( {expenseDetails, tripId, participants} ) => {
 
     const { setReload, isLoading, setIsLoading } = useContext(ReloadContext); 
     const { name, category, date, amount, expenseId, paidBy } = expenseDetails; 
+
+    // State for the checkboxes of the distribution ratio. Will initialize with the 
+    // ratio sent from expenseDetails in the props. If none is available (if there is only 1 participant),
+    // it will initialize as null. 
+
     const [ isChecked, setIsChecked ] = useState(() => {
         if (!expenseDetails.distribution) {
             return null
@@ -25,12 +33,18 @@ const Expense = ( {expenseDetails, tripId, participants} ) => {
         })
         return arr; 
     }) 
+
+    // State for making changes to the distribution ratio
     const [formData, setFormData] = useState({
         amount: amount, distribution: expenseDetails.distribution
     })
+
+    // State for viewing/hiding the second table row for showing the distribution ratio
     const [isViewing, setIsViewing] = useState(false)
+
     const { getAccessTokenSilently } = useAuth0(); 
     
+    // Function for deleting an expense. 
     const handleDelete = async (value) => {
         setIsLoading(value);
         try {
@@ -50,8 +64,8 @@ const Expense = ( {expenseDetails, tripId, participants} ) => {
         }
     }
 
+    // Function for editing an expense (if changes are made to the distribution ratio)
     const patchExpense = async () => {
-      
         setIsLoading("loadingdistribution");
         try {
             const token = await getAccessTokenSilently();
@@ -72,11 +86,14 @@ const Expense = ( {expenseDetails, tripId, participants} ) => {
         }
     }
 
+    // Changes to the distribution ratio have to be saved by clicking "save new distribution"
     const handleSubmit = (e) => {
         e.preventDefault();
         patchExpense(); 
     }
 
+    // Function for viewing/hiding second table row that shows distribution ratio.
+    // If any changes are made but not saved, the states will be re-initialized upon hiding the row. 
     const handleView = () => {
         if (isViewing) {
             setFormData({amount: amount, distribution: expenseDetails.distribution})

@@ -12,6 +12,8 @@ import ProgressBar from "./ProgressBar";
 import Balances from "./Balances";
 import { ReloadContext } from "./reloadContext";
 
+// Component for displaying and editing the details of any particular trip. 
+
 const TripDetails = () => {
 
     const { reload, setIsLoading } = useContext(ReloadContext); 
@@ -19,9 +21,15 @@ const TripDetails = () => {
     const { getAccessTokenSilently } = useAuth0();
     const [ tripData, setTripData ] = useState(); 
     const navigate = useNavigate(); 
-    const [sortedItems, setSortedItems] = useState();
+    
+    // States for sorting the expense table - be default it will sort by date/ascending.
+    const [sortedItems, setSortedItems] = useState(); 
     const [direction, setDirection] = useState("ascending")
     const [sortBy, setSortBy] = useState("date")
+
+    // Function for fetching the trip based on the tripId in the URL Params. 
+    // Backend will check if the userId for this tripId matches the person
+    // sending the JWT. If not a match, you will be redirected to the homepage. 
 
     const fetchTrip = async () => {
         setIsLoading("loading");

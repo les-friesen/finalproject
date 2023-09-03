@@ -3,8 +3,12 @@ import { sortTableData } from '../helpers';
 import Expense from './Expense';
 import {BiSortAlt2} from "react-icons/bi"
 
+// Table componenet for viewing all of the expenses. The sortTableData function comes from helpers.js. 
+
 const SortableTable = ({participants, direction, setDirection, setSortBy, sortedItems, setSortedItems, currency, expenses, tripId}) => {
 
+    // Function for choosing the field to sortBy, and alternate between ascending and descending. 
+    
     const handleClick = event => {
         const sortDir = direction === 'descending' ? 'ascending' : 'descending'
         setDirection(sortDir)

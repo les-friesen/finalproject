@@ -6,14 +6,24 @@ import { currency_list } from "../data";
 import { CircularProgress } from "@mui/material";
 import { ReloadContext } from "./reloadContext";
 
+// Component for adding a new trip
+
 const AddTrip = () => {
 
-    const { setReload, isLoading, setIsLoading } = useContext(ReloadContext); 
+    const { setReload, isLoading, setIsLoading } = useContext(ReloadContext);
+    
+    // State for opening/closing Add Trip form. 
     const [creatingTrip, setCreatingTrip] = useState(false); 
+
+    // Initializing formData state with empty array of participants. 
     const [formData, setFormData] = useState({ participants : []}); 
+
+    // State for adding a new participant. 
     const [addParticipant, setAddParticipant] = useState(""); 
+
     const { user, getAccessTokenSilently } = useAuth0(); 
 
+    // Function for opening/closing Add Trip form. 
     const handleCreate = () => {
         if (creatingTrip) {
             setFormData({ participants : []})
@@ -21,15 +31,13 @@ const AddTrip = () => {
         setCreatingTrip(!creatingTrip)
     }
 
-    const deleteParticipant = (index) => {
-        let newArray = [...formData.participants]
-        newArray.splice(index, 1)
-        setFormData({
-            ...formData,
-            participants : newArray
-        })
+     // Function for handling changes when typing in a participant's name. 
+    const handleParticipantChange = (e) => {
+        setAddParticipant(e.target.value)
     }
 
+    // Function for adding a new participant. Will push the new name to the Participants
+    // array in the formData state. 
     const handleAddParticipant = () => {
         addParticipant.length > 0 && 
         setFormData({
@@ -40,11 +48,17 @@ const AddTrip = () => {
         setAddParticipant(""); 
     }
 
-    const handleParticipantChange = (e) => {
-        setAddParticipant(e.target.value)
-
+    // Function for deleting a participant. 
+    const deleteParticipant = (index) => {
+        let newArray = [...formData.participants]
+        newArray.splice(index, 1)
+        setFormData({
+            ...formData,
+            participants : newArray
+        })
     }
 
+    // Function for changes to formData fields. 
     const handleChange = (key, value) => {
         setFormData({
             ...formData,
@@ -53,6 +67,7 @@ const AddTrip = () => {
             })
     }
 
+    // Function for adding a trip when form is completed. 
     const AddTrip = async () => {
         setIsLoading("loadingtrip")
         try {

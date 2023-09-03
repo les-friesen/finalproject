@@ -8,23 +8,34 @@ import { useAuth0 } from "@auth0/auth0-react";
 import Distribution from "./Distribution";
 import { ReloadContext } from "./reloadContext";
 
+//Component for adding a new expense to a trip. 
 
 const AddExpense = ( {participants, tripId, baseCurrency} ) => {
 
     const { setReload, isLoading, setIsLoading } = useContext(ReloadContext); 
+
+    //States for showing/hiding currency calculator and form for adding an expense. 
     const [creatingExpense, setCreatingExpense] = useState(false); 
     const [usingCalculator, setUsingCalculator] = useState(false); 
+
+    //Initializing formData state, based on number of participants. 
     const [formData, setFormData] = useState(() => {
         const arr = Array(participants.length).fill("1");
         return { amount: 0, distribution: arr}
     })
+
+    //Initializing currency state
     const [currencyData, setCurrencyData] = useState({rate: 0}); 
+
     const { getAccessTokenSilently } = useAuth0(); 
+
+    //Initializing checkbox states for distribution ratio 
     const [ isChecked, setIsChecked ] = useState(() => {
         const arr = Array(participants.length).fill(true);
         return arr; 
     })
 
+    // Function for opening/closing the Add Expense form; when closed, states will be re-initialized. 
     const handleCreate = () => {
         if (creatingExpense) {
             setFormData(() => {
@@ -40,12 +51,19 @@ const AddExpense = ( {participants, tripId, baseCurrency} ) => {
         setCreatingExpense(!creatingExpense)
     }
 
+    // Function for opening/closing calculator. 
     const handleUsingCalculator = () => {
         if (usingCalculator) {
             setCurrencyData({rate: 0});
         }
         setUsingCalculator(!usingCalculator); 
     }
+
+    // Function for getting currency data from external API. 
+    // Calls to the API will be made for any changes to the currency and date (after both have been selected)
+    // When the amount to be converted is changed, it will automatically update the amount in the formData. 
+    // Manual changes to the rate will also automatically update the formData amount. 
+
 
     const handleCurrencyChange = (key, value) => {
         setCurrencyData({
@@ -94,6 +112,7 @@ const AddExpense = ( {participants, tripId, baseCurrency} ) => {
         }
     }
 
+    //Function for handling changes to the form
     const handleChange = (key, value) => {
         setFormData({
             ...formData,
@@ -101,6 +120,7 @@ const AddExpense = ( {participants, tripId, baseCurrency} ) => {
             })
     }
 
+    //Function for adding the expense when hitting the "add expense" button. 
     const addExpense = async () => {
         setIsLoading("loadingexpense");
         try {

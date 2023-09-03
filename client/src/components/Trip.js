@@ -9,6 +9,8 @@ import { useContext } from "react";
 import { ReloadContext } from "./reloadContext";
 import { CircularProgress } from "@mui/material";
 
+// Component for displaying each individual Trip on the homepage. 
+
 const Trip = ( {tripData} ) => {
 
     const { setReload, isLoading, setIsLoading } = useContext(ReloadContext); 
@@ -16,6 +18,7 @@ const Trip = ( {tripData} ) => {
     const { getAccessTokenSilently } = useAuth0(); 
     const total = calcTotal(expenses);
 
+    // Function for deleting an entire trip. 
     const handleDelete = async (value) => {
         setIsLoading(value)
         try {
