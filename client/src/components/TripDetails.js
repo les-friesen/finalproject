@@ -35,7 +35,7 @@ const TripDetails = () => {
         setIsLoading("loading");
         try {
             const token = await getAccessTokenSilently();
-            const response = await fetch(`/getTrip/${tripId}`, 
+            const response = await fetch(`https://traveltracker-server.onrender.com/getTrip/${tripId}`, 
                 { headers : {
                     "authorization" : `Bearer ${token}`
                 }}

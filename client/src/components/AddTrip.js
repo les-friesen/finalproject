@@ -72,7 +72,7 @@ const AddTrip = () => {
         setIsLoading("loadingtrip")
         try {
             const token = await getAccessTokenSilently();
-            const response = await fetch(`/addTrip`, {
+            const response = await fetch(`https://traveltracker-server.onrender.com/addTrip`, {
                 method: "POST",
                 headers : {
                     "Accept": "application/json",

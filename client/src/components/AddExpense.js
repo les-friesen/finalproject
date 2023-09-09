@@ -72,7 +72,7 @@ const AddExpense = ( {participants, tripId, baseCurrency} ) => {
         })
 
         if (currencyData.currency  && key === "currencyDate") {
-                fetch(`/getHistoricalRate/${currencyData.currency}/${baseCurrency}/${value}`)
+                fetch(`https://traveltracker-server.onrender.com/getHistoricalRate/${currencyData.currency}/${baseCurrency}/${value}`)
                 .then(res => res.json())
                 .then((data) => {
                     setCurrencyData({...currencyData, [key]: value, rate: data.data.result})
@@ -87,7 +87,7 @@ const AddExpense = ( {participants, tripId, baseCurrency} ) => {
         }
 
         if (currencyData.currencyDate && key === "currency") {
-                fetch(`/getHistoricalRate/${value}/${baseCurrency}/${currencyData.currencyDate}`)
+                fetch(`https://traveltracker-server.onrender.com/getHistoricalRate/${value}/${baseCurrency}/${currencyData.currencyDate}`)
                 .then(res => res.json())
                 .then((data) => {
                     setCurrencyData({...currencyData, [key]: value, rate: data.data.result})
@@ -125,7 +125,7 @@ const AddExpense = ( {participants, tripId, baseCurrency} ) => {
         setIsLoading("loadingexpense");
         try {
             const token = await getAccessTokenSilently();
-            const response = await fetch(`/addExpense/${tripId}`, {
+            const response = await fetch(`https://traveltracker-server.onrender.com/addExpense/${tripId}`, {
                 method: "POST",
                 headers : {
                     "Accept": "application/json",

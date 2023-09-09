@@ -29,7 +29,7 @@ const HomePage = () => {
     const fetchTrips = async () => {
         try {
             const token = await getAccessTokenSilently();
-            const response = await fetch(`/getTrips/${user.sub}`, 
+            const response = await fetch(`https://traveltracker-server.onrender.com/getTrips/${user.sub}`, 
             { headers : {
                 authorization: `Bearer ${token}`
             }}
