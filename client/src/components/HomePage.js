@@ -29,7 +29,8 @@ const HomePage = () => {
     const fetchTrips = async () => {
         try {
             const token = await getAccessTokenSilently();
-            const response = await fetch(`https://traveltracker-server.onrender.com/getTrips/${user.sub}`, 
+            console.log(token);
+            const response = await fetch(`https://travel-tracker-server.vercel.app/getTrips/${user.sub}`, 
             { headers : {
                 authorization: `Bearer ${token}`
             }}

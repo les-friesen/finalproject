@@ -23,7 +23,7 @@ const Trip = ( {tripData} ) => {
         setIsLoading(value)
         try {
             const token = await getAccessTokenSilently();
-            const response = await fetch(`https://traveltracker-server.onrender.com/deleteTrip/${_id}`, {
+            const response = await fetch(`https://travel-tracker-server.vercel.app/${_id}`, {
                 method: "DELETE",
                 headers : {
                     "authorization": `Bearer ${token}`

@@ -49,7 +49,7 @@ const Expense = ( {expenseDetails, tripId, participants} ) => {
         setIsLoading(value);
         try {
             const token = await getAccessTokenSilently();
-            const response = await fetch(`https://traveltracker-server.onrender.com/deleteExpense/${tripId}/${expenseId}`, {
+            const response = await fetch(`https://travel-tracker-server.vercel.app/deleteExpense/${tripId}/${expenseId}`, {
                 method: "DELETE",
                 headers : {
                     "authorization": `Bearer ${token}`
@@ -69,7 +69,7 @@ const Expense = ( {expenseDetails, tripId, participants} ) => {
         setIsLoading("loadingdistribution");
         try {
             const token = await getAccessTokenSilently();
-            const response = await fetch(`https://traveltracker-server.onrender.com/editExpense/${tripId}/${expenseId}`, {
+            const response = await fetch(`https://travel-tracker-server.vercel.app/editExpense/${tripId}/${expenseId}`, {
                 method: "PATCH",
                 headers : {
                     "Accept": "application/json",

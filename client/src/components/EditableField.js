@@ -30,7 +30,7 @@ const EditableField = ({ field, inputType, initialValue, tripId, expenseId, form
     const patchTrip = async () => {
         try {
             const token = await getAccessTokenSilently();
-            const response = await fetch(`https://traveltracker-server.onrender.com/editTrip/${tripId}`, {
+            const response = await fetch(`https://travel-tracker-server.vercel.app/editTrip/${tripId}`, {
                 method: "PATCH",
                 headers : {
                     "Accept": "application/json",
@@ -50,7 +50,7 @@ const EditableField = ({ field, inputType, initialValue, tripId, expenseId, form
     const patchExpense = async () => {
         try {
             const token = await getAccessTokenSilently();
-            const response = await fetch(`https://traveltracker-server.onrender.com/editExpense/${tripId}/${expenseId}`, {
+            const response = await fetch(`https://travel-tracker-server.vercel.app/editExpense/${tripId}/${expenseId}`, {
                 method: "PATCH",
                 headers : {
                     "Accept": "application/json",
