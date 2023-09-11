@@ -1,16 +1,15 @@
-index.js hosted with ❤ by GitHub
 {
   "version": 2,
   "builds": [
     {
-      "src": "server.js",
-      "use": "@now/node"
+        "src": "server.js",
+        "use": "@now/node"
     }
-  ],
-  "routes": [
+    ],
+    "routes": [
     {
-      "src": "/(.*)",
-      "dest": "server.js"
+        "src": "/(.*)",
+        "dest": "server.js"
     }
-  ]
+]
 }
