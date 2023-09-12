@@ -17,8 +17,6 @@
 - Javascript
 
 ## Features
-- Material UI react tools (MUI)
-- Javascript
 - Auth0 user authentication
 - Secure API calls using middleware to check JSON web tokens (express-oauth2-jwt-bearer)
 - Ability to Create, Read, Update and Delete trips
