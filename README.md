@@ -1,11 +1,13 @@
 
-# <div style="text-align: center">
+ # Travel Tracker
+ 
+ <div style="text-align: center">
     <img src='client/src/assets/logo.png' style='width:35%' alt="logo">
 </div>
 </br>
 
-> Live demo available via [_vercel_](https://travel-tracker-demo.vercel.app). 
-> Video demo availalbe via [_youtube_](https://youtu.be/XHTmO55-3iY).
+- Live demo available at https://travel-tracker-demo.vercel.app
+- Video demo availalbe at https://youtu.be/XHTmO55-3iY 
 
 ## General Information
 - Travel Tracker is an expense tracker and budgeting tool for travellers with built-in currency conversion and bill-splitting capabilities.
@@ -50,8 +52,30 @@ Type `yarn start` to start the frontend dev environment.
 
 Type `yarn dev:backend` to start the backend dev environment.
 
-## Screenshots
-![Example screenshot](./img/screenshot.png)
-Hello this is a test
+---
 
-  <img src='client/src/assets/logo.png' style='width:100%' alt="logo">
+## The App 
+
+Landing page with login or signup prompt. 
+
+  <img src='client/src/assets/landingpage.png' style='width:100%' alt="landing page">
+
+Homepage after login, displaying all trips that the user has created. From this page you can create, update or delete trips. 
+
+<img src='client/src/assets/welcomepage.png' style='width:100%' alt="home page">
+
+Collapsable form for creating a new trip. 
+
+<img src='client/src/assets/addnewtrip.png' style='width:100%' alt="create trip">
+
+When viewing or editing expenses for an individual trip, you will see a sortable expense table. From this page you can create, update or delete expenses. 
+
+<img src='client/src/assets/expensetable.png' style='width:100%' alt="create trip">
+
+Collapsable form for creating a new expense. Currency calculator is also collapsable. 
+
+<img src='client/src/assets/addexpense.png' style='width:100%' alt="create expense">
+
+Collapsable window for viewing balances and reimbursements. Each participant's final balance (amount paid minus amounts owed) is displayed, and a table of suggested reimbursements is displayed. Participants with a balance owing (a negative value displayed in red) will need to repay the participants with a balance owed (a positive value displayed in green). 
+
+<img src='client/src/assets/balances.png' style='width:100%' alt="create expense">
