@@ -1,9 +1,12 @@
 
-<div style="text-align: center; width: 100%">
-    <img src='client/src/assets/logo.png' style='width:40%' alt="logo">
+<div style="text-align: center">
+    <img src='client/src/assets/logo.png' style='width:30%' alt="logo">
 </div>
+</br>
 
 > Live demo available at [_https://travel-tracker-demo.vercel.app_](https://travel-tracker-demo.vercel.app). 
+</br>
+
 > Video demo availalbe [_here_](https://youtu.be/XHTmO55-3iY).
 
 ## General Information
