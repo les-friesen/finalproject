@@ -1,9 +1,10 @@
 # Travel Tracker
+<img src='client/src/assets/logo.png' style='width:100%' alt="logo">
 > Live demo available at [_https://travel-tracker-demo.vercel.app_](https://travel-tracker-demo.vercel.app).
 > Video demo availalbe [_here_](https://youtu.be/XHTmO55-3iY).
 
 ## General Information
-- Travel Tracker is an expense tracker and budgeting tool for travellers with built in currency conversion and bill-splitting capabilities.
+- Travel Tracker is an expense tracker and budgeting tool for travellers with built-in currency conversion and bill-splitting capabilities.
 - This was my final project for Concordia University's intensive full-stack web development diploma. 
 
 ## Technologies Used
@@ -48,3 +49,5 @@ Type `yarn dev:backend` to start the backend dev environment.
 ## Screenshots
 ![Example screenshot](./img/screenshot.png)
 Hello this is a test
+
+  <img src='client/src/assets/logo.png' style='width:100%' alt="logo">
