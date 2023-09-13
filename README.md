@@ -1,13 +1,11 @@
 
-<div style="text-align: center">
-    <img src='client/src/assets/logo.png' style='width:30%' alt="logo">
+# <div style="text-align: center">
+    <img src='client/src/assets/logo.png' style='width:35%' alt="logo">
 </div>
 </br>
 
-> Live demo available at [_https://travel-tracker-demo.vercel.app_](https://travel-tracker-demo.vercel.app). 
-</br>
-
-> Video demo availalbe [_here_](https://youtu.be/XHTmO55-3iY).
+> Live demo available via [_vercel_](https://travel-tracker-demo.vercel.app). 
+> Video demo availalbe via [_youtube_](https://youtu.be/XHTmO55-3iY).
 
 ## General Information
 - Travel Tracker is an expense tracker and budgeting tool for travellers with built-in currency conversion and bill-splitting capabilities.
